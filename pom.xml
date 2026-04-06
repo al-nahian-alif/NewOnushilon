@@ -5,50 +5,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-<<<<<<< HEAD
-    <artifactId>NewOnushilon</artifactId>
-=======
     <artifactId>Onushilon</artifactId>
->>>>>>> a46c9a1364b495cf075a13545d3400c32f1aa64b
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-<<<<<<< HEAD
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <!-- JavaFX -->
-=======
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    <dependencies>
->>>>>>> a46c9a1364b495cf075a13545d3400c32f1aa64b
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>21</version>
-<<<<<<< HEAD
-            <classifier>win</classifier>
-=======
->>>>>>> a46c9a1364b495cf075a13545d3400c32f1aa64b
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>21</version>
-<<<<<<< HEAD
-            <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>21</version>
-            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21</version>
         </dependency>
 
-        <!-- Jackson — JSON parsing for Supabase responses -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -68,17 +55,4 @@
             </plugin>
         </plugins>
     </build>
-=======
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>21</version> </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
-        </dependency>
-    </dependencies>
->>>>>>> a46c9a1364b495cf075a13545d3400c32f1aa64b
 </project>

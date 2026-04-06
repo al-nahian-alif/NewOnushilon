@@ -14,10 +14,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-
 public class QuestionController implements Initializable {
 
     // --- 1. UI CONNECTIONS (Must match fx:id in SceneBuilder) ---
@@ -67,11 +63,6 @@ public class QuestionController implements Initializable {
     @FXML
     private Label questionCountLabel; // The "Question 1 of 61" label
 
-    @FXML
-    private MediaView explanationMediaView;
-
-    private MediaPlayer mediaPlayer;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupRadioButtons();
@@ -81,15 +72,15 @@ public class QuestionController implements Initializable {
 
         radioButtons = List.of(option1, option2, option3, option4, option5);
 
-        explanationMediaView.setOnMouseClicked(event -> {
-            if (mediaPlayer != null) {
-                if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-                    mediaPlayer.pause();
-                } else {
-                    mediaPlayer.play();
-                }
-            }
-        });
+//        explanationMediaView.setOnMouseClicked(event -> {
+//            if (mediaPlayer != null) {
+//                if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+//                    mediaPlayer.pause();
+//                } else {
+//                    mediaPlayer.play();
+//                }
+//            }
+//        });
     }
 
     private void setMode(boolean showResults) {
@@ -209,7 +200,6 @@ public class QuestionController implements Initializable {
 
         if (explanationLabel != null) explanationLabel.setText(q.explanation.text);
 //        loadYoutubeVideo();
-        loadLocalVideo("test_video.mp4");
     }
 
     @FXML
@@ -315,7 +305,7 @@ public class QuestionController implements Initializable {
     private void resetUI() {
         // 1. Hide the purple bar and explanations
         setMode(false);
-        stopVideo();
+//        stopVideo();
 
         // 2. Re-enable the Submit button
         submitButton.setDisable(false);
@@ -361,49 +351,49 @@ public class QuestionController implements Initializable {
         loadDataFromFile(subject);
     }
 
-    private void loadLocalVideo(String videoFileName) {
-        if (explanationMediaView == null) return;
-
-        try {
-            // 1. Get the file path from resources
-            // Note: Use a leading slash "/" to find files in the resources root
-            String path = getClass().getResource("/videos/" + videoFileName).toExternalForm();
-
-            // 2. Create Media and Player
-            Media media = new Media(path);
-
-            // If a previous player exists, stop and dispose of it to free memory!
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.dispose();
-            }
-
-            mediaPlayer = new MediaPlayer(media);
-
-            // 3. Attach to the View
-            explanationMediaView.setMediaPlayer(mediaPlayer);
-
-            // 4. (Optional) Auto-play when loaded?
-            // mediaPlayer.setAutoPlay(true);
-
-        } catch (Exception e) {
-            System.out.println("Error loading video: " + e.getMessage());
-        }
-    }
+//    private void loadLocalVideo(String videoFileName) {
+//        if (explanationMediaView == null) return;
+//
+//        try {
+//            // 1. Get the file path from resources
+//            // Note: Use a leading slash "/" to find files in the resources root
+//            String path = getClass().getResource("/videos/" + videoFileName).toExternalForm();
+//
+//            // 2. Create Media and Player
+//            Media media = new Media(path);
+//
+//            // If a previous player exists, stop and dispose of it to free memory!
+//            if (mediaPlayer != null) {
+//                mediaPlayer.stop();
+//                mediaPlayer.dispose();
+//            }
+//
+//            mediaPlayer = new MediaPlayer(media);
+//
+//            // 3. Attach to the View
+//            explanationMediaView.setMediaPlayer(mediaPlayer);
+//
+//            // 4. (Optional) Auto-play when loaded?
+//            // mediaPlayer.setAutoPlay(true);
+//
+//        } catch (Exception e) {
+//            System.out.println("Error loading video: " + e.getMessage());
+//        }
+//    }
 
     // Call this from your "Submit" button action
-    public void playVideo() {
-        if (mediaPlayer != null) {
-            mediaPlayer.play();
-        }
-    }
-
-    // Call this in "resetUI" to stop audio when moving to the next question
-    public void stopVideo() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-    }
+//    public void playVideo() {
+//        if (mediaPlayer != null) {
+//            mediaPlayer.play();
+//        }
+//    }
+//
+//    // Call this in "resetUI" to stop audio when moving to the next question
+//    public void stopVideo() {
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//        }
+//    }
 }
 
 //    private void loadYoutubeVideo() {
