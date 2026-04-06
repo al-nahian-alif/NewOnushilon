@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.SubjectsController"
+      prefWidth="1200" prefHeight="820"
+      maxWidth="Infinity" maxHeight="Infinity"
+      style="-fx-background-color:#f5f7f8;">
+
+    <!-- ── SIDEBAR ── -->
+    <fx:include source="Sidebar.fxml" fx:id="sidebar"/>
+
+    <!-- ── MAIN AREA ── -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color:#f5f7f8;">
+
+        <!-- ══ STICKY HEADER (tabs live here) ══ -->
+        <VBox style="-fx-background-color:#f5f7f8;
+                     -fx-border-color:transparent transparent #e2e8f0 transparent;
+                     -fx-border-width:0 0 1.5 0; -fx-padding:28 32 0 32;">
+
+            <!-- Page title -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Subjects"
+                           style="-fx-font-size:28px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+                    <Label text="Master your HSC syllabus with targeted practice and smart analytics."
+                           style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+                </VBox>
+                <!-- View toggle buttons -->
+                <HBox spacing="2"
+                      style="-fx-background-color:#ffffff; -fx-background-radius:8;
+                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:8;
+                             -fx-padding:4;">
+                    <Button fx:id="listViewBtn" text="☰  List" onAction="#onListView"
+                            style="-fx-background-color:#0d7ff2; -fx-background-radius:6;
+                                   -fx-text-fill:white; -fx-font-size:12px; -fx-font-weight:bold;
+                                   -fx-padding:6 14; -fx-cursor:hand;"/>
+                    <Button fx:id="gridViewBtn" text="⊞  Grid" onAction="#onGridView"
+                            style="-fx-background-color:transparent; -fx-background-radius:6;
+                                   -fx-text-fill:#64748b; -fx-font-size:12px; -fx-font-weight:bold;
+                                   -fx-padding:6 14; -fx-cursor:hand;"/>
+                </HBox>
+            </HBox>
+
+            <Region prefHeight="16"/>
+
+            <!-- Subject tab bar (dynamically populated) -->
+            <HBox fx:id="tabBar" spacing="0" alignment="BOTTOM_LEFT"/>
+
+            <Region prefHeight="0"/>
+        </VBox>
+
+        <!-- ══ SCROLLABLE BODY ══ -->
+        <ScrollPane fx:id="mainScroll" VBox.vgrow="ALWAYS"
+                    fitToWidth="true" fitToHeight="false"
+                    style="-fx-background-color:#f5f7f8; -fx-background:#f5f7f8;
+                           -fx-border-color:transparent; -fx-padding:0;">
+
+            <VBox fx:id="pageBody"
+                  style="-fx-background-color:#f5f7f8; -fx-padding:28 32 40 32;"
+                  spacing="24">
+
+                <!-- ── SMART REVIEW SECTION ── -->
+                <VBox spacing="14">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="✦" style="-fx-font-size:16px; -fx-text-fill:#0d7ff2;"/>
+                        <Label text="Smart Review"
+                               style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                    </HBox>
+                    <!-- Smart cards populated dynamically -->
+                    <HBox fx:id="smartReviewBox" spacing="16">
+                        <Label text="Analysing your performance..."
+                               style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ── CHAPTERS SECTION ── -->
+                <VBox spacing="14">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label fx:id="chaptersTitle" text="Chapters"
+                               style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"
+                               HBox.hgrow="ALWAYS"/>
+                        <!-- Loading indicator -->
+                        <ProgressIndicator fx:id="loadingSpinner"
+                                           maxWidth="20" maxHeight="20" visible="false"
+                                           style="-fx-progress-color:#0d7ff2;"/>
+                    </HBox>
+
+                    <!-- Table header (list view) -->
+                    <HBox fx:id="tableHeader"
+                          style="-fx-background-color:#f8fafc; -fx-padding:10 24;
+                                 -fx-border-color:#f1f5f9; -fx-border-width:0 0 1 0;
+                                 -fx-background-radius:12 12 0 0;
+                                 -fx-border-radius:12 12 0 0;">
+                        <Label text="CHAPTER NAME"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               prefWidth="220"/>
+                        <Label text="PROGRESS"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               prefWidth="170"/>
+                        <Label text="IMPROVEMENT"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               prefWidth="130"/>
+                        <Label text="MISTAKES"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               prefWidth="90"/>
+                        <Label text="LAST ACCESSED"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               prefWidth="130"/>
+                        <Label text="ACTIONS"
+                               style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"
+                               HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <!-- Chapter rows / grid — dynamically populated -->
+                    <VBox fx:id="chaptersContainer" spacing="0"
+                          style="-fx-background-color:#ffffff; -fx-background-radius:0 0 12 12;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:0 1 1 1;
+                                 -fx-border-radius:0 0 12 12;">
+                        <Label text="Select a subject tab above."
+                               style="-fx-font-size:13px; -fx-text-fill:#94a3b8; -fx-padding:20 24;"/>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

@@ -1,0 +1,59 @@
+{
+  "subjectId": "math_higher_01",
+  "subjectName": "Higher Math 1st Paper",
+  "totalQuestions": 2,
+  "chapters": [
+    {
+      "chapterId": "ch_01",
+      "chapterName": "Matrices and Determinants",
+      "questions": [
+        {
+          "id": "q_1001",
+          "type": "mcq",
+          "difficulty": "medium",
+          "content": {
+            "questionText": "Appleton's population is 400 greater than Berryville's population. If Berryville's population were reduced by 900 people, then Appleton's population would be 3 times as large as Berryville's population. What is Berryville's current population? [reading from the json]",
+            "options": [
+              "1550",
+              "1650",
+              "1750",
+              "1850",
+              "1950"
+            ],
+            "correctOptionIndex": 0
+          },
+          "explanation": {
+            "text": "Set A = Appleton's current population, and B = Berryville's current population. We know:\n\nA = B + 400\nA = 3 * (B - 900)\n\nSubstitute in for A:\n\nB + 400 = 3 * (B - 900)\nB + 400 = 3B - 2700\n400 = 2B - 2700\n3100 = 2B\n1550 = B\n\nAnswer: (A)",
+            "videoId": "_lFXDWvFhK8"
+          },
+          "meta": {
+            "avgTimeSec": 56
+          }
+        },
+        {
+          "id": "q_1002",
+          "type": "mcq",
+          "difficulty": "hard",
+          "content": {
+            "questionText": "If matrix A is of order 2x3 and matrix B is of order 3x2, what is the order of matrix AB?",
+            "options": [
+              "2x2",
+              "3x3",
+              "2x3",
+              "3x2",
+              "Undefined"
+            ],
+            "correctOptionIndex": 0
+          },
+          "explanation": {
+            "text": "The order of matrix multiplication AB is determined by the rows of A and columns of B.\n\nA = 2 rows, 3 cols\nB = 3 rows, 2 cols\n\nThe inner dimensions match (3), so the result is (Rows of A) x (Cols of B) = 2x2.",
+            "videoId": "another_video_id"
+          },
+          "meta": {
+            "avgTimeSec": 30
+          }
+        }
+      ]
+    }
+  ]
+}

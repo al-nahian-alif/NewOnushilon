@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.MockExamController"
+      style="-fx-background-color:#f5f7f8; -fx-padding:32;" spacing="20"
+      prefWidth="480" prefHeight="380">
+
+    <Label text="⏱  Configure Mock Exam"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+    <Label text="Select your subject and how long you want to practice."
+           style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+
+    <!-- Subject -->
+    <VBox spacing="8">
+        <Label text="Subject"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <ComboBox fx:id="subjectCombo" maxWidth="Infinity"
+                  style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                         -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                         -fx-font-size:13px; -fx-padding:4;"/>
+    </VBox>
+
+    <!-- Duration -->
+    <VBox spacing="8">
+        <Label text="Duration"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <HBox spacing="10">
+            <Button fx:id="btn1hr" text="1 Hour" onAction="#onDur1"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    style="-fx-background-color:#0d7ff2; -fx-background-radius:10;
+                           -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold;
+                           -fx-padding:10 0; -fx-cursor:hand;"/>
+            <Button fx:id="btn2hr" text="2 Hours" onAction="#onDur2"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    style="-fx-background-color:#f1f5f9; -fx-background-radius:10;
+                           -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:bold;
+                           -fx-padding:10 0; -fx-cursor:hand;"/>
+            <Button fx:id="btn3hr" text="3 Hours" onAction="#onDur3"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    style="-fx-background-color:#f1f5f9; -fx-background-radius:10;
+                           -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:bold;
+                           -fx-padding:10 0; -fx-cursor:hand;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Info box -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color:#eff6ff; -fx-background-radius:10;
+                 -fx-border-color:#bfdbfe; -fx-border-width:1; -fx-border-radius:10;
+                 -fx-padding:12 16;">
+        <Label text="ℹ" style="-fx-font-size:16px; -fx-text-fill:#0d7ff2;"/>
+        <Label fx:id="infoLabel"
+               text="1 hour exam • All questions from selected subject."
+               style="-fx-font-size:12px; -fx-text-fill:#334155;" wrapText="true"
+               HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <Label fx:id="errorLabel" text=""
+           style="-fx-font-size:12px; -fx-text-fill:#ef4444;"/>
+
+    <HBox spacing="12">
+        <Button text="Cancel" onAction="#onCancel"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:transparent; -fx-background-radius:10;
+                       -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:10;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-padding:11 0; -fx-cursor:hand;"/>
+        <Button text="Start Exam  ▶" onAction="#onStart"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:#7c3aed; -fx-background-radius:10;
+                       -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold;
+                       -fx-padding:11 0; -fx-cursor:hand;"/>
+    </HBox>
+</VBox>

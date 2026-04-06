@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.SidebarController"
+      style="-fx-background-color:#ffffff;
+             -fx-border-color:#e2e8f0; -fx-border-width:0 1 0 0;"
+      minWidth="240" maxWidth="240" prefWidth="240">
+
+    <!-- ── Logo ── -->
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-padding:22 20 18 20;">
+        <StackPane style="-fx-background-color:#0d7ff2; -fx-background-radius:12;
+                          -fx-min-width:40; -fx-min-height:40;
+                          -fx-pref-width:40; -fx-pref-height:40;" alignment="CENTER">
+            <Label text="🎓" style="-fx-font-size:18px;"/>
+        </StackPane>
+        <VBox spacing="1">
+            <Label text="HSC Prep"
+                   style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+            <HBox spacing="4" alignment="CENTER_LEFT">
+                <Label text="Exam Mode:"
+                       style="-fx-font-size:11px; -fx-text-fill:#64748b;"/>
+                <Label text="Active"
+                       style="-fx-font-size:11px; -fx-font-weight:600; -fx-text-fill:#22c55e;"/>
+            </HBox>
+        </VBox>
+    </HBox>
+
+    <!-- ── Nav items ── -->
+    <VBox VBox.vgrow="ALWAYS" spacing="2"
+          style="-fx-padding:4 12 4 12;">
+
+        <Button fx:id="btnDashboard" text="Dashboard"
+                maxWidth="Infinity" onAction="#onDashboard"
+                style="-fx-background-color:transparent; -fx-background-radius:8;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
+                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
+            <graphic>
+                <Label text="⊞" style="-fx-font-size:16px; -fx-text-fill:#475569;"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnSubjects" text="Subjects"
+                maxWidth="Infinity" onAction="#onSubjects"
+                style="-fx-background-color:transparent; -fx-background-radius:8;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
+                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
+            <graphic>
+                <Label text="📚" style="-fx-font-size:16px;"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnPractice" text="Practice"
+                maxWidth="Infinity" onAction="#onPractice"
+                style="-fx-background-color:transparent; -fx-background-radius:8;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
+                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
+            <graphic>
+                <Label text="✏" style="-fx-font-size:16px;"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnPerformance" text="Performance"
+                maxWidth="Infinity" onAction="#onPerformance"
+                style="-fx-background-color:transparent; -fx-background-radius:8;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
+                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
+            <graphic>
+                <Label text="📊" style="-fx-font-size:16px;"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="btnSettings" text="Settings"
+                maxWidth="Infinity" onAction="#onSettings"
+                style="-fx-background-color:transparent; -fx-background-radius:8;
+                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
+                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
+            <graphic>
+                <Label text="⚙" style="-fx-font-size:16px;"/>
+            </graphic>
+        </Button>
+
+    </VBox>
+
+    <!-- ── Daily Goal card ── -->
+    <VBox style="-fx-padding:0 14 12 14;">
+        <VBox style="-fx-background-color:#e8f3fe; -fx-background-radius:12;
+                     -fx-border-color:#bfdbfe; -fx-border-width:1; -fx-border-radius:12;
+                     -fx-padding:12 14;">
+            <Label text="DAILY GOAL"
+                   style="-fx-font-size:10px; -fx-font-weight:bold;
+                          -fx-text-fill:#0d7ff2; -fx-letter-spacing:1;"/>
+            <Region prefHeight="8"/>
+            <StackPane prefHeight="6" minHeight="6" maxHeight="6">
+                <HBox style="-fx-background-color:#bfdbfe; -fx-background-radius:100;"
+                      maxWidth="Infinity" prefHeight="6"/>
+                <HBox fx:id="dailyGoalBar"
+                      style="-fx-background-color:#0d7ff2; -fx-background-radius:100;"
+                      prefHeight="6" StackPane.alignment="CENTER_LEFT"/>
+            </StackPane>
+            <Region prefHeight="6"/>
+            <Label fx:id="dailyGoalLabel" text="Loading..."
+                   style="-fx-font-size:11px; -fx-text-fill:#475569;"/>
+        </VBox>
+    </VBox>
+
+    <!-- ══ Bottom profile card (8.8) ══ -->
+    <HBox style="-fx-padding:14 16 18 16;
+                 -fx-border-color:#e2e8f0 transparent transparent transparent;
+                 -fx-border-width:1 0 0 0; -fx-cursor:hand;
+                 -fx-background-color:transparent;"
+          spacing="10" alignment="CENTER_LEFT"
+          onMouseClicked="#onSettings"
+          onMouseEntered="#onProfileCardHover"
+          onMouseExited="#onProfileCardExit">
+
+        <!-- Avatar -->
+        <StackPane fx:id="sidebarAvatarPane"
+                   style="-fx-background-color:#dbeafe; -fx-background-radius:50;
+                          -fx-min-width:40; -fx-min-height:40;
+                          -fx-pref-width:40; -fx-pref-height:40;" alignment="CENTER">
+            <Label fx:id="sidebarInitials" text="?"
+                   style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#0d7ff2;"/>
+        </StackPane>
+
+        <!-- Name + subtitle -->
+        <VBox HBox.hgrow="ALWAYS" spacing="2">
+            <Label fx:id="sidebarName" text="Loading..."
+                   style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+            <Label text="HSC Candidate 2025"
+                   style="-fx-font-size:11px; -fx-text-fill:#64748b;"/>
+        </VBox>
+
+        <Label text="⚙" style="-fx-font-size:14px; -fx-text-fill:#94a3b8;"/>
+    </HBox>
+
+</VBox>

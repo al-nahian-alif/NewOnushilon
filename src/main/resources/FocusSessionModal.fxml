@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.FocusSessionController"
+      style="-fx-background-color:#f5f7f8; -fx-padding:32;" spacing="20"
+      alignment="TOP_CENTER" prefWidth="440" prefHeight="400">
+
+    <Label text="🎯  Focus Session"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+
+    <!-- Subject selector -->
+    <VBox spacing="6" maxWidth="Infinity">
+        <Label text="Select Subject"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <ComboBox fx:id="subjectCombo" maxWidth="Infinity"
+                  style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                         -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                         -fx-font-size:13px; -fx-padding:4;"/>
+    </VBox>
+
+    <!-- Duration selector -->
+    <VBox spacing="6" maxWidth="Infinity">
+        <Label text="Session Duration"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <HBox spacing="8">
+            <Button fx:id="btn25" text="25 min" onAction="#onDuration25"
+                    style="-fx-background-color:#0d7ff2; -fx-background-radius:8;
+                           -fx-text-fill:white; -fx-font-size:12px; -fx-font-weight:bold;
+                           -fx-padding:7 18; -fx-cursor:hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="btn45" text="45 min" onAction="#onDuration45"
+                    style="-fx-background-color:#f1f5f9; -fx-background-radius:8;
+                           -fx-text-fill:#475569; -fx-font-size:12px; -fx-font-weight:bold;
+                           -fx-padding:7 18; -fx-cursor:hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="btn60" text="60 min" onAction="#onDuration60"
+                    style="-fx-background-color:#f1f5f9; -fx-background-radius:8;
+                           -fx-text-fill:#475569; -fx-font-size:12px; -fx-font-weight:bold;
+                           -fx-padding:7 18; -fx-cursor:hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        </HBox>
+    </VBox>
+
+    <!-- Timer display -->
+    <StackPane style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                      -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
+                      -fx-padding:24;" maxWidth="Infinity">
+        <VBox alignment="CENTER" spacing="4">
+            <Label fx:id="timerLabel" text="25:00"
+                   style="-fx-font-size:52px; -fx-font-weight:900;
+                          -fx-text-fill:#0f172a; -fx-font-family:'Arial';"/>
+            <Label fx:id="timerStatusLabel" text="Ready to start"
+                   style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+        </VBox>
+    </StackPane>
+
+    <!-- Action buttons -->
+    <HBox spacing="12">
+        <Button fx:id="startBtn" text="▶  Start" onAction="#onStart"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:#0d7ff2; -fx-background-radius:10;
+                       -fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:bold;
+                       -fx-padding:12 0; -fx-cursor:hand;"/>
+        <Button fx:id="endBtn" text="End Session" onAction="#onEnd"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:#fee2e2; -fx-background-radius:10;
+                       -fx-text-fill:#dc2626; -fx-font-size:14px; -fx-font-weight:bold;
+                       -fx-padding:12 0; -fx-cursor:hand;" disable="true"/>
+    </HBox>
+
+    <Label fx:id="savedLabel" text="" maxWidth="Infinity"
+           style="-fx-font-size:12px; -fx-text-fill:#22c55e; -fx-text-alignment:center;"
+           textAlignment="CENTER"/>
+</VBox>

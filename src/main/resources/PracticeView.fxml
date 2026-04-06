@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<!--
+  PRACTICE PAGE — Session Launcher
+  This page is ONLY about launching practice sessions.
+  It does NOT show chapters (that belongs to Subjects page).
+
+  Sections:
+  1. Search bar — find questions/topics to practice instantly
+  2. Quick stats bar — today's numbers at a glance
+  3. Recommended session — AI-picked next session based on weak areas
+  4. Quick Start cards — Daily Challenge / Weak Focus / Mock Exam
+  5. Study Tools — Flashcards / Past Papers / Mistake Bank
+  6. Recent Sessions — last 5 completed sessions
+  7. Leaderboard — daily rankings
+-->
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.PracticeController"
+      prefWidth="1280" prefHeight="820"
+      maxWidth="Infinity" maxHeight="Infinity"
+      style="-fx-background-color:#f5f7f8;">
+
+    <fx:include source="Sidebar.fxml" fx:id="sidebar"/>
+
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color:#f5f7f8;">
+
+        <!-- ══ HEADER ══ -->
+        <VBox style="-fx-background-color:#f5f7f8;
+                     -fx-border-color:transparent transparent #e2e8f0 transparent;
+                     -fx-border-width:0 0 1 0; -fx-padding:18 28 14 28;" spacing="14">
+
+            <!-- Title + Search -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox spacing="2" HBox.hgrow="NEVER">
+                    <Label text="Practice Center"
+                           style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+                    <Label text="Launch sessions, track streaks, and beat your personal best."
+                           style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                </VBox>
+
+                <!-- Search -->
+                <StackPane HBox.hgrow="ALWAYS" maxWidth="460" alignment="TOP_LEFT">
+                    <VBox>
+                        <HBox style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                     -fx-border-color:#e2e8f0; -fx-border-width:1;
+                                     -fx-border-radius:12; -fx-padding:0 14; -fx-spacing:8;"
+                              alignment="CENTER_LEFT">
+                            <Label text="🔍" style="-fx-font-size:13px; -fx-text-fill:#94a3b8;"/>
+                            <TextField fx:id="searchField"
+                                       promptText="Search questions, topics, chapters..."
+                                       style="-fx-background-color:transparent;
+                                              -fx-border-color:transparent; -fx-font-size:13px;
+                                              -fx-text-fill:#0f172a; -fx-padding:10 0;"
+                                       HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <VBox fx:id="searchDropdown" visible="false" managed="false"
+                              style="-fx-background-color:#ffffff; -fx-background-radius:0 0 12 12;
+                                     -fx-border-color:#e2e8f0; -fx-border-width:0 1 1 1;
+                                     -fx-border-radius:0 0 12 12; -fx-padding:4 0;
+                                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.10),12,0,0,4);"
+                              maxWidth="460"/>
+                    </VBox>
+                </StackPane>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Avatar -->
+                <StackPane style="-fx-background-color:#e2e8f0; -fx-background-radius:50;
+                                  -fx-min-width:38; -fx-min-height:38;
+                                  -fx-pref-width:38; -fx-pref-height:38;" alignment="CENTER">
+                    <Label fx:id="avatarLabel" text="?"
+                           style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#475569;"/>
+                </StackPane>
+            </HBox>
+
+            <!-- Quick Stats Bar -->
+            <HBox spacing="12">
+                <HBox spacing="8" alignment="CENTER_LEFT"
+                      style="-fx-background-color:#ffffff; -fx-background-radius:50;
+                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:50;
+                             -fx-padding:7 16;">
+                    <Label text="✦" style="-fx-font-size:12px; -fx-text-fill:#0d7ff2;"/>
+                    <Label fx:id="statQuestionsLabel" text="— questions today"
+                           style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#0f172a;"/>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT"
+                      style="-fx-background-color:#ffffff; -fx-background-radius:50;
+                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:50;
+                             -fx-padding:7 16;">
+                    <Label text="🔥" style="-fx-font-size:12px;"/>
+                    <Label fx:id="statStreakLabel" text="— day streak"
+                           style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#0f172a;"/>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT"
+                      style="-fx-background-color:#ffffff; -fx-background-radius:50;
+                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:50;
+                             -fx-padding:7 16;">
+                    <Label text="🏅" style="-fx-font-size:12px;"/>
+                    <Label fx:id="statXpLabel" text="— XP total"
+                           style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#0f172a;"/>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT"
+                      style="-fx-background-color:#ffffff; -fx-background-radius:50;
+                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:50;
+                             -fx-padding:7 16;">
+                    <Label text="🎯" style="-fx-font-size:12px;"/>
+                    <Label fx:id="statAccuracyLabel" text="— avg accuracy"
+                           style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#0f172a;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+
+        <!-- ══ BODY ══ -->
+        <ScrollPane fx:id="mainScroll" VBox.vgrow="ALWAYS"
+                    fitToWidth="true" fitToHeight="false"
+                    style="-fx-background-color:#f5f7f8; -fx-background:#f5f7f8;
+                           -fx-border-color:transparent; -fx-padding:0;">
+
+            <HBox style="-fx-background-color:#f5f7f8; -fx-padding:22 28;"
+                  spacing="20" fillHeight="true">
+
+                <!-- ════ LEFT COLUMN ════ -->
+                <VBox HBox.hgrow="ALWAYS" spacing="22">
+
+                    <!-- ── Recommended Session ── -->
+                    <VBox fx:id="recommendedCard"
+                          style="-fx-background-color:linear-gradient(to right, #0d7ff2, #1d4ed8);
+                                 -fx-background-radius:16; -fx-padding:24;
+                                 -fx-effect:dropshadow(gaussian,rgba(13,127,242,0.35),16,0,0,4);"
+                          spacing="10">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label text="✦" style="-fx-font-size:14px; -fx-text-fill:#bfdbfe;"/>
+                            <Label text="RECOMMENDED FOR YOU"
+                                   style="-fx-font-size:10px; -fx-font-weight:bold;
+                                          -fx-text-fill:#bfdbfe; -fx-letter-spacing:1;"/>
+                        </HBox>
+                        <Label fx:id="recommendedTitle" text="Loading recommendation..."
+                               style="-fx-font-size:18px; -fx-font-weight:900;
+                                      -fx-text-fill:white;" wrapText="true"/>
+                        <Label fx:id="recommendedSubtitle" text=""
+                               style="-fx-font-size:13px; -fx-text-fill:#bfdbfe;"
+                               wrapText="true"/>
+                        <Region prefHeight="6"/>
+                        <HBox spacing="10">
+                            <Button fx:id="recommendedBtn" text="Start Now  ▶"
+                                    onAction="#onRecommended"
+                                    style="-fx-background-color:white; -fx-background-radius:10;
+                                           -fx-text-fill:#0d7ff2; -fx-font-size:13px;
+                                           -fx-font-weight:bold; -fx-padding:10 22; -fx-cursor:hand;"/>
+                            <Button text="Skip →" onAction="#onSkipRecommended"
+                                    style="-fx-background-color:rgba(255,255,255,0.15);
+                                           -fx-background-radius:10; -fx-text-fill:white;
+                                           -fx-font-size:13px; -fx-padding:10 18; -fx-cursor:hand;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- ── Quick Start ── -->
+                    <VBox spacing="12">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label text="⚡" style="-fx-font-size:16px; -fx-text-fill:#0d7ff2;"/>
+                            <Label text="Quick Start"
+                                   style="-fx-font-size:17px; -fx-font-weight:bold;
+                                          -fx-text-fill:#0f172a;"/>
+                        </HBox>
+                        <HBox spacing="14">
+
+                            <!-- Daily Challenge -->
+                            <VBox HBox.hgrow="ALWAYS" spacing="10"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1;
+                                         -fx-border-radius:16; -fx-padding:20;
+                                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),6,0,0,1);">
+                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                    <StackPane style="-fx-background-color:#e8f3fe;
+                                                      -fx-background-radius:12;
+                                                      -fx-min-width:46; -fx-min-height:46;
+                                                      -fx-pref-width:46; -fx-pref-height:46;"
+                                               alignment="CENTER">
+                                        <Label text="✦" style="-fx-font-size:20px; -fx-text-fill:#0d7ff2;"/>
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Daily Challenge"
+                                               style="-fx-font-size:14px; -fx-font-weight:bold;
+                                                      -fx-text-fill:#0f172a;"/>
+                                        <Label fx:id="dailyChallengeSubLabel"
+                                               text="10 questions • Mixed subjects"
+                                               style="-fx-font-size:11px; -fx-text-fill:#64748b;"/>
+                                    </VBox>
+                                </HBox>
+                                <Label fx:id="challengeStatusLabel" text=""
+                                       style="-fx-font-size:11px; -fx-text-fill:#22c55e;
+                                              -fx-font-weight:600;"/>
+                                <Button fx:id="dailyChallengeBtn" text="Start Now  ▶"
+                                        maxWidth="Infinity" onAction="#onDailyChallenge"
+                                        style="-fx-background-color:#0d7ff2; -fx-background-radius:10;
+                                               -fx-text-fill:white; -fx-font-size:12px;
+                                               -fx-font-weight:bold; -fx-padding:9 0; -fx-cursor:hand;"/>
+                            </VBox>
+
+                            <!-- Weak Area Focus -->
+                            <VBox HBox.hgrow="ALWAYS" spacing="10"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1;
+                                         -fx-border-radius:16; -fx-padding:20;
+                                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),6,0,0,1);">
+                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                    <StackPane style="-fx-background-color:#fff7ed;
+                                                      -fx-background-radius:12;
+                                                      -fx-min-width:46; -fx-min-height:46;
+                                                      -fx-pref-width:46; -fx-pref-height:46;"
+                                               alignment="CENTER">
+                                        <Label text="🎯" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Weak Area Focus"
+                                               style="-fx-font-size:14px; -fx-font-weight:bold;
+                                                      -fx-text-fill:#0f172a;"/>
+                                        <Label fx:id="weakAreaSubLabel"
+                                               text="Targets your mistake bank"
+                                               style="-fx-font-size:11px; -fx-text-fill:#64748b;"/>
+                                    </VBox>
+                                </HBox>
+                                <Region prefHeight="2"/>
+                                <Button text="Review  ↺" maxWidth="Infinity"
+                                        onAction="#onWeakAreaFocus"
+                                        style="-fx-background-color:#ea580c; -fx-background-radius:10;
+                                               -fx-text-fill:white; -fx-font-size:12px;
+                                               -fx-font-weight:bold; -fx-padding:9 0; -fx-cursor:hand;"/>
+                            </VBox>
+
+                            <!-- Mock Exam -->
+                            <VBox HBox.hgrow="ALWAYS" spacing="10"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1;
+                                         -fx-border-radius:16; -fx-padding:20;
+                                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),6,0,0,1);">
+                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                    <StackPane style="-fx-background-color:#f5f3ff;
+                                                      -fx-background-radius:12;
+                                                      -fx-min-width:46; -fx-min-height:46;
+                                                      -fx-pref-width:46; -fx-pref-height:46;"
+                                               alignment="CENTER">
+                                        <Label text="⏱" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Mock Exam"
+                                               style="-fx-font-size:14px; -fx-font-weight:bold;
+                                                      -fx-text-fill:#0f172a;"/>
+                                        <Label text="Full timed simulation"
+                                               style="-fx-font-size:11px; -fx-text-fill:#64748b;"/>
+                                    </VBox>
+                                </HBox>
+                                <Region prefHeight="2"/>
+                                <Button text="Simulate  ⏳" maxWidth="Infinity"
+                                        onAction="#onMockExam"
+                                        style="-fx-background-color:#7c3aed; -fx-background-radius:10;
+                                               -fx-text-fill:white; -fx-font-size:12px;
+                                               -fx-font-weight:bold; -fx-padding:9 0; -fx-cursor:hand;"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- ── Recent Sessions ── -->
+                    <VBox spacing="12">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label text="🕐" style="-fx-font-size:16px;"/>
+                            <Label text="Recent Sessions"
+                                   style="-fx-font-size:17px; -fx-font-weight:bold;
+                                          -fx-text-fill:#0f172a;" HBox.hgrow="ALWAYS"/>
+                            <Button text="View All" onAction="#onViewAllSessions"
+                                    style="-fx-background-color:transparent;
+                                           -fx-border-color:transparent;
+                                           -fx-text-fill:#0d7ff2; -fx-font-size:12px;
+                                           -fx-font-weight:600; -fx-cursor:hand;"/>
+                        </HBox>
+                        <VBox fx:id="recentSessionsBox" spacing="8">
+                            <Label text="Loading recent sessions..."
+                                   style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+
+                <!-- ════ RIGHT COLUMN ════ -->
+                <VBox minWidth="295" prefWidth="300" maxWidth="300" spacing="18">
+
+                    <!-- Study Tools -->
+                    <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),6,0,0,1);">
+                        <HBox spacing="8" alignment="CENTER_LEFT"
+                              style="-fx-padding:16 20 12 20;
+                                     -fx-border-color:transparent transparent #f1f5f9 transparent;
+                                     -fx-border-width:0 0 1 0;">
+                            <Label text="📦" style="-fx-font-size:16px;"/>
+                            <Label text="Study Tools"
+                                   style="-fx-font-size:15px; -fx-font-weight:bold;
+                                          -fx-text-fill:#0f172a;"/>
+                        </HBox>
+
+                        <VBox spacing="10" style="-fx-padding:14 18 18 18;">
+
+                            <!-- Flashcard Decks -->
+                            <HBox spacing="12" alignment="CENTER_LEFT"
+                                  onMouseClicked="#onFlashcardDecks"
+                                  style="-fx-background-color:#f0f7ff; -fx-background-radius:12;
+                                         -fx-border-color:#bfdbfe; -fx-border-width:1;
+                                         -fx-border-radius:12; -fx-padding:14; -fx-cursor:hand;">
+                                <StackPane style="-fx-background-color:#0d7ff2;
+                                                  -fx-background-radius:10;
+                                                  -fx-min-width:38; -fx-min-height:38;
+                                                  -fx-pref-width:38; -fx-pref-height:38;"
+                                           alignment="CENTER">
+                                    <Label text="🃏" style="-fx-font-size:16px;"/>
+                                </StackPane>
+                                <VBox HBox.hgrow="ALWAYS" spacing="2">
+                                    <Label text="Flashcard Decks"
+                                           style="-fx-font-size:13px; -fx-font-weight:bold;
+                                                  -fx-text-fill:#0f172a;"/>
+                                    <Label fx:id="flashcardSubLabel"
+                                           text="Pre-made decks across all subjects"
+                                           style="-fx-font-size:11px; -fx-text-fill:#475569;"
+                                           wrapText="true"/>
+                                </VBox>
+                                <Label text="→" style="-fx-font-size:14px; -fx-text-fill:#0d7ff2;"/>
+                            </HBox>
+
+                            <!-- Past Papers -->
+                            <HBox spacing="12" alignment="CENTER_LEFT"
+                                  onMouseClicked="#onPastPapers"
+                                  style="-fx-background-color:#f8fafc; -fx-background-radius:12;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1;
+                                         -fx-border-radius:12; -fx-padding:14; -fx-cursor:hand;">
+                                <StackPane style="-fx-background-color:#0f172a;
+                                                  -fx-background-radius:10;
+                                                  -fx-min-width:38; -fx-min-height:38;
+                                                  -fx-pref-width:38; -fx-pref-height:38;"
+                                           alignment="CENTER">
+                                    <Label text="📁" style="-fx-font-size:16px;"/>
+                                </StackPane>
+                                <VBox HBox.hgrow="ALWAYS" spacing="2">
+                                    <Label text="Past Papers"
+                                           style="-fx-font-size:13px; -fx-font-weight:bold;
+                                                  -fx-text-fill:#0f172a;"/>
+                                    <Label text="HSC exams 2015–2023"
+                                           style="-fx-font-size:11px; -fx-text-fill:#475569;"/>
+                                </VBox>
+                                <Label text="→" style="-fx-font-size:14px; -fx-text-fill:#94a3b8;"/>
+                            </HBox>
+
+                            <!-- Mistake Bank -->
+                            <HBox spacing="12" alignment="CENTER_LEFT"
+                                  onMouseClicked="#onMistakeBankClick"
+                                  style="-fx-background-color:#fff5f5; -fx-background-radius:12;
+                                         -fx-border-color:#fecaca; -fx-border-width:1;
+                                         -fx-border-radius:12; -fx-padding:14; -fx-cursor:hand;">
+                                <StackPane style="-fx-background-color:#ef4444;
+                                                  -fx-background-radius:10;
+                                                  -fx-min-width:38; -fx-min-height:38;
+                                                  -fx-pref-width:38; -fx-pref-height:38;"
+                                           alignment="CENTER">
+                                    <Label text="❗" style="-fx-font-size:16px;"/>
+                                </StackPane>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Mistake Bank"
+                                           style="-fx-font-size:13px; -fx-font-weight:bold;
+                                                  -fx-text-fill:#0f172a;"/>
+                                    <Label fx:id="mistakeBankLabel" text="Loading..."
+                                           style="-fx-font-size:11px; -fx-text-fill:#475569;"
+                                           wrapText="true"/>
+                                    <StackPane prefHeight="4" minHeight="4" maxHeight="4">
+                                        <HBox style="-fx-background-color:#fecaca;
+                                                     -fx-background-radius:100;"
+                                              maxWidth="Infinity" prefHeight="4"/>
+                                        <HBox fx:id="mistakeBar"
+                                              style="-fx-background-color:#ef4444;
+                                                     -fx-background-radius:100;"
+                                              prefHeight="4"
+                                              StackPane.alignment="CENTER_LEFT"/>
+                                    </StackPane>
+                                </VBox>
+                                <Label text="→" style="-fx-font-size:14px; -fx-text-fill:#ef4444;"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Leaderboard -->
+                    <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
+                                 -fx-padding:20; -fx-spacing:14;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),6,0,0,1);">
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label text="🏆" style="-fx-font-size:17px;"/>
+                            <Label text="Today's Leaders"
+                                   style="-fx-font-size:15px; -fx-font-weight:bold;
+                                          -fx-text-fill:#0f172a;" HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="leaderboardLiveLabel" text="● Live"
+                                   style="-fx-font-size:11px; -fx-text-fill:#22c55e;
+                                          -fx-font-weight:bold;"/>
+                        </HBox>
+                        <VBox fx:id="leaderboardBox" spacing="8">
+                            <Label text="Loading..."
+                                   style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+            </HBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

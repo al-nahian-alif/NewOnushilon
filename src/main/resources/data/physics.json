@@ -1,0 +1,59 @@
+{
+  "subjectId": "phys_01",
+  "subjectName": "Physics 1st Paper",
+  "totalQuestions": 2,
+  "chapters": [
+    {
+      "chapterId": "ch_vec_02",
+      "chapterName": "Vector Physics",
+      "questions": [
+        {
+          "id": "q_ph_101",
+          "type": "mcq",
+          "difficulty": "medium",
+          "content": {
+            "questionText": "If vector A = 2i + 3j and vector B = -i + 2j, what is the value of the dot product A·B?",
+            "options": [
+              "2",
+              "4",
+              "6",
+              "-4",
+              "0"
+            ],
+            "correctOptionIndex": 1
+          },
+          "explanation": {
+            "text": "The dot product A·B = (Ax * Bx) + (Ay * By).\n\nHere:\nAx=2, Bx=-1 -> (2 * -1) = -2\nAy=3, By=2 -> (3 * 2) = 6\n\nTotal = -2 + 6 = 4.",
+            "videoId": "vid_ph_001"
+          },
+          "meta": {
+            "avgTimeSec": 45
+          }
+        },
+        {
+          "id": "q_ph_102",
+          "type": "mcq",
+          "difficulty": "hard",
+          "content": {
+            "questionText": "A swimmer can swim at 4 m/s in still water. If the river current is 3 m/s, what is the velocity of the swimmer relative to the bank when swimming upstream?",
+            "options": [
+              "1 m/s",
+              "7 m/s",
+              "5 m/s",
+              "3.5 m/s",
+              "12 m/s"
+            ],
+            "correctOptionIndex": 0
+          },
+          "explanation": {
+            "text": "When swimming upstream, the resultant velocity (V) is the difference between the swimmer's velocity (Vs) and the current's velocity (Vc).\n\nV = Vs - Vc\nV = 4 m/s - 3 m/s = 1 m/s.",
+            "videoId": "vid_ph_002"
+          },
+          "meta": {
+            "avgTimeSec": 40
+          }
+        }
+      ]
+    }
+  ]
+}

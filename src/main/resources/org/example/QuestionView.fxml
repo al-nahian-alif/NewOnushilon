@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.QuestionController">
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER_LEFT">
+         <padding>
+            <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+         </padding>
+         <children>
+            <Label fx:id="subjectLabel" styleClass="header-title" text="Math" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+               <children>
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="tool-button" text="Calculator" />
+                  <ToggleButton maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="tool-button" text="Flag" />
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="timer-label" text="00:32" translateY="10.0" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vvalue="1.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" minHeight="50.0" styleClass="instruction-bar" text="Choose the option that best answers the question." />
+                  <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0" style="-fx-background-color: white;">
+                     <padding>
+                        <Insets bottom="40.0" left="100.0" right="100.0" top="40.0" />
+                     </padding>
+                     <children>
+                        <Label fx:id="questionLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" styleClass="question-box" text="Appleton's population is 400 greater than Berryville's population. If Berryville's population were reduced by 900 people, then Appleton's population would be 3 times as large as Berryville's population. What is Berryville's current population?" wrapText="true" HBox.hgrow="ALWAYS" />
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <RadioButton fx:id="option1" mnemonicParsing="false" styleClass="option-radio" text="1550" />
+                              <RadioButton fx:id="option2" layoutX="10.0" layoutY="42.0" mnemonicParsing="false" styleClass="option-radio" text="1650">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="answers" />
+                                 </toggleGroup></RadioButton>
+                              <RadioButton fx:id="option3" layoutX="10.0" layoutY="60.0" mnemonicParsing="false" styleClass="option-radio" text="1750" toggleGroup="$answers" />
+                              <RadioButton fx:id="option4" layoutX="10.0" layoutY="84.0" mnemonicParsing="false" styleClass="option-radio" text="1850" toggleGroup="$answers" />
+                              <RadioButton fx:id="option5" layoutX="10.0" layoutY="121.0" mnemonicParsing="false" styleClass="option-radio" text="1950" toggleGroup="$answers" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="footer-bar">
+                     <padding>
+                        <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <Button mnemonicParsing="false" styleClass="footer-button-white" text="End Practice and See Results" />
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="questionCountLabel" styleClass="footer-label" text="Question 1 of 61" />
+                        <Region layoutX="500.0" layoutY="25.0" prefHeight="200.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="submitButton" mnemonicParsing="false" onAction="#onSubmitClick" styleClass="footer-button-white" text="Submit Answer" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNextQuestionAction" styleClass="footer-button-green" text="Next Question" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <VBox fx:id="bottomContentArea">
+                     <children>
+                        <HBox fx:id="resultBar" alignment="CENTER" minHeight="80.0" prefHeight="100.0" prefWidth="200.0" spacing="40.0" styleClass="result-bar">
+                           <padding>
+                              <Insets bottom="15.0" left="40.0" right="40.0" top="30.0" />
+                           </padding>
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="result-header" text="Chapter" />
+                                    <Label fx:id="chapterLabel" styleClass="result-value" text="Matrices and Determinants" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="540.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="result-header" text="Your Result" />
+                                    <Label fx:id="resultLabel" styleClass="result-value" text="Correct" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="610.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="yourPaceLabel" styleClass="result-header" text="Your Pace" />
+                                    <Label fx:id="othersPaceLabel" styleClass="result-value" text="1 min 2 sec" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" layoutX="680.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="result-header" text="Other's Pace" />
+                                    <Label styleClass="result-value" text="56 sec" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="explanation-container">
+                           <padding>
+                              <Insets top="30.0" />
+                           </padding>
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="200.0" spacing="15.0" style="-fx-border-color: #e0e0e0; -fx-border-width: 0 1 0 0;;">
+                                 <padding>
+                                    <Insets right="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label styleClass="sidebar-header" text="Options:" />
+                                    <Hyperlink maxWidth="1.7976931348623157E308" styleClass="sidebar-link" text="Video Explanation" />
+                                    <Hyperlink layoutX="10.0" layoutY="65.0" maxWidth="1.7976931348623157E308" styleClass="sidebar-link" text="Text Explanation" />
+                                    <Hyperlink layoutX="10.0" layoutY="103.0" maxWidth="1.7976931348623157E308" styleClass="sidebar-link" text="Related Lessons" />
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets left="30.0" />
+                                 </padding>
+                                 <children>
+                                    <VBox id="textExplanationContainer" fx:id="explanationContainer" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label styleClass="explanation-title" text="Text Explanation" />
+                                          <Label fx:id="explanationLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="explanation-text" text="Here is the realistic dummy text for your math problem and the clean CSS.1. The Dummy Text ExplanationPaste this into your &quot;Text Explanation&quot; Label (make sure Wrap Text is checked):Let $B$ be the population of Berryville. Then the population of Appleton is $B + 400$.We are told that if Berryville's population were reduced by 900, Appleton's population would be 3 times as large.We can write this as an equation:$B + 400 = 3 * (B - 900)$$B + 400 = 3B - 2700$$3100 = 2B$$B = 1550$Therefore, the current population of Berryville is 1,550." wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                    <VBox id="videoExplanationContainer" fx:id="videoContainer" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+                                       <children>
+                                          <Label styleClass="explanation-title" text="Video Explanation" />
+                                          <MediaView fx:id="explanationMediaView" fitHeight="200.0" fitWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="notes-section">
+                                       <padding>
+                                          <Insets bottom="30.0" top="30.0" />
+                                       </padding>
+                                       <children>
+                                          <Label styleClass="notes-header" text="Your Notes" />
+                                          <TextArea prefHeight="200.0" prefRowCount="6" prefWidth="200.0" styleClass="notes-input" wrapText="true" />
+                                          <Button alignment="CENTER_RIGHT" mnemonicParsing="false" styleClass="notes-button" text="Save Note" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <HBox id="spacedRepetitionBar" fx:id="srsBar" alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="15.0" styleClass="srs-bar" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" text="Easy (7d)">
+               <styleClass>
+                  <String fx:value="srs-button" />
+                  <String fx:value="srs-easy" />
+               </styleClass>
+            </Button>
+            <Button layoutX="30.0" layoutY="25.0" mnemonicParsing="false" text="Good (4d)">
+               <styleClass>
+                  <String fx:value="srs-button" />
+                  <String fx:value="srs-good" />
+               </styleClass>
+            </Button>
+            <Button layoutX="97.0" layoutY="25.0" mnemonicParsing="false" text="Hard (2d)">
+               <styleClass>
+                  <String fx:value="srs-button" />
+                  <String fx:value="srs-hard" />
+               </styleClass>
+            </Button>
+            <Button layoutX="164.0" layoutY="25.0" mnemonicParsing="false" text="Again (&lt;1m)">
+               <styleClass>
+                  <String fx:value="srs-button" />
+                  <String fx:value="srs-again" />
+               </styleClass>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

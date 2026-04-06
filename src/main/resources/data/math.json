@@ -1,0 +1,59 @@
+{
+  "subjectId": "math_higher_02",
+  "subjectName": "Higher Math 2nd Paper",
+  "totalQuestions": 2,
+  "chapters": [
+    {
+      "chapterId": "ch_cmplx_03",
+      "chapterName": "Complex Numbers",
+      "questions": [
+        {
+          "id": "q_ma_201",
+          "type": "mcq",
+          "difficulty": "easy",
+          "content": {
+            "questionText": "What is the value of i^4n+1, where n is an integer?",
+            "options": [
+              "1",
+              "-1",
+              "i",
+              "-i",
+              "0"
+            ],
+            "correctOptionIndex": 2
+          },
+          "explanation": {
+            "text": "We know the powers of i repeat in a cycle of 4: i, -1, -i, 1.\n\ni^(4n+1) = (i^4n) * i^1\nSince i^4n = (i^4)^n = 1^n = 1\n\nThe result is 1 * i = i.",
+            "videoId": "vid_ma_001"
+          },
+          "meta": {
+            "avgTimeSec": 20
+          }
+        },
+        {
+          "id": "q_ma_202",
+          "type": "mcq",
+          "difficulty": "medium",
+          "content": {
+            "questionText": "If z = 3 + 4i, what is the modulus |z|?",
+            "options": [
+              "3",
+              "4",
+              "5",
+              "7",
+              "25"
+            ],
+            "correctOptionIndex": 2
+          },
+          "explanation": {
+            "text": "The modulus of a complex number z = x + iy is given by sqrt(x^2 + y^2).\n\n|z| = sqrt(3^2 + 4^2)\n|z| = sqrt(9 + 16)\n|z| = sqrt(25) = 5.",
+            "videoId": "vid_ma_002"
+          },
+          "meta": {
+            "avgTimeSec": 35
+          }
+        }
+      ]
+    }
+  ]
+}

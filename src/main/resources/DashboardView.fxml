@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.DashboardController"
+      prefWidth="1200" prefHeight="820"
+      maxWidth="Infinity" maxHeight="Infinity"
+      style="-fx-background-color:#f5f7f8;">
+
+    <fx:include source="Sidebar.fxml" fx:id="sidebar"/>
+
+    <ScrollPane fx:id="scrollPane" HBox.hgrow="ALWAYS"
+                fitToWidth="true" fitToHeight="false"
+                style="-fx-background-color:#f5f7f8; -fx-background:#f5f7f8;
+                       -fx-border-color:transparent; -fx-padding:0;">
+
+        <VBox fillWidth="true"
+              style="-fx-background-color:#f5f7f8; -fx-padding:32;" spacing="0">
+
+            <!-- ══ HEADER ══ -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label fx:id="welcomeLabel" text="Welcome back!"
+                           style="-fx-font-size:26px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+                    <Label fx:id="streakLabel" text="Loading your progress..."
+                           style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+                </VBox>
+                <Button text="View Schedule" onAction="#onViewSchedule"
+                        style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0; -fx-border-width:1;
+                               -fx-border-radius:8; -fx-background-radius:8; -fx-font-size:13px;
+                               -fx-padding:8 16; -fx-cursor:hand;"/>
+                <Button text="Start Quick Quiz" onAction="#onStartQuiz"
+                        style="-fx-background-color:#0d7ff2; -fx-background-radius:8; -fx-text-fill:white;
+                               -fx-font-size:13px; -fx-font-weight:600; -fx-padding:8 16; -fx-cursor:hand;"/>
+            </HBox>
+
+            <Region prefHeight="28"/>
+
+            <HBox spacing="20" fillHeight="true">
+
+                <!-- ── LEFT COLUMN ── -->
+                <VBox HBox.hgrow="ALWAYS" spacing="22">
+
+                    <!-- Subject Overview -->
+                    <VBox spacing="14">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Subject Overview"
+                                   style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"
+                                   HBox.hgrow="ALWAYS"/>
+                            <Button text="View All" onAction="#onViewAllSubjects"
+                                    style="-fx-background-color:transparent; -fx-border-color:transparent;
+                                           -fx-text-fill:#0d7ff2; -fx-font-size:13px; -fx-font-weight:600;
+                                           -fx-cursor:hand;"/>
+                        </HBox>
+
+                        <GridPane hgap="16" vgap="16">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            </columnConstraints>
+
+                            <!-- Physics Card -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                         -fx-padding:18; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                                <HBox alignment="CENTER_LEFT">
+                                    <StackPane style="-fx-background-color:#dbeafe; -fx-background-radius:10;
+                                                      -fx-min-width:44; -fx-min-height:44; -fx-pref-width:44; -fx-pref-height:44;"
+                                               alignment="CENTER">
+                                        <Label text="🚀" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label text="PHYSICS"
+                                           style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                                </HBox>
+                                <Label text="Physics"
+                                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                                <Label fx:id="physicsProgressLabel" text="Loading..."
+                                       style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                                <StackPane prefHeight="8" minHeight="8" maxHeight="8">
+                                    <HBox style="-fx-background-color:#f1f5f9; -fx-background-radius:100;"
+                                          maxWidth="Infinity" prefHeight="8"/>
+                                    <HBox fx:id="physicsBar"
+                                          style="-fx-background-color:#0d7ff2; -fx-background-radius:100;"
+                                          prefHeight="8" StackPane.alignment="CENTER_LEFT"/>
+                                </StackPane>
+                                <Label fx:id="physicsLastLabel" text=""
+                                       style="-fx-font-size:10px; -fx-text-fill:#94a3b8;"/>
+                                <Button text="Continue Learning" maxWidth="Infinity"
+                                        onAction="#onContinuePhysics"
+                                        style="-fx-background-color:#f8fafc; -fx-background-radius:8;
+                                               -fx-text-fill:#0d7ff2; -fx-font-size:12px; -fx-font-weight:bold;
+                                               -fx-padding:7 0; -fx-cursor:hand;"/>
+                            </VBox>
+
+                            <!-- Chemistry Card -->
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                         -fx-padding:18; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                                <HBox alignment="CENTER_LEFT">
+                                    <StackPane style="-fx-background-color:#d1fae5; -fx-background-radius:10;
+                                                      -fx-min-width:44; -fx-min-height:44; -fx-pref-width:44; -fx-pref-height:44;"
+                                               alignment="CENTER">
+                                        <Label text="🧪" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label text="CHEMISTRY"
+                                           style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                                </HBox>
+                                <Label text="Chemistry"
+                                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                                <Label fx:id="chemistryProgressLabel" text="Loading..."
+                                       style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                                <StackPane prefHeight="8" minHeight="8" maxHeight="8">
+                                    <HBox style="-fx-background-color:#f1f5f9; -fx-background-radius:100;"
+                                          maxWidth="Infinity" prefHeight="8"/>
+                                    <HBox fx:id="chemistryBar"
+                                          style="-fx-background-color:#10b981; -fx-background-radius:100;"
+                                          prefHeight="8" StackPane.alignment="CENTER_LEFT"/>
+                                </StackPane>
+                                <Label fx:id="chemistryLastLabel" text=""
+                                       style="-fx-font-size:10px; -fx-text-fill:#94a3b8;"/>
+                                <Button text="Continue Learning" maxWidth="Infinity"
+                                        onAction="#onContinueChemistry"
+                                        style="-fx-background-color:#f8fafc; -fx-background-radius:8;
+                                               -fx-text-fill:#0d7ff2; -fx-font-size:12px; -fx-font-weight:bold;
+                                               -fx-padding:7 0; -fx-cursor:hand;"/>
+                            </VBox>
+
+                            <!-- Math Card -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                         -fx-padding:18; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                                <HBox alignment="CENTER_LEFT">
+                                    <StackPane style="-fx-background-color:#fef3c7; -fx-background-radius:10;
+                                                      -fx-min-width:44; -fx-min-height:44; -fx-pref-width:44; -fx-pref-height:44;"
+                                               alignment="CENTER">
+                                        <Label text="🔢" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label text="MATH"
+                                           style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                                </HBox>
+                                <Label text="Math Advanced"
+                                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                                <Label fx:id="mathProgressLabel" text="Loading..."
+                                       style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                                <StackPane prefHeight="8" minHeight="8" maxHeight="8">
+                                    <HBox style="-fx-background-color:#f1f5f9; -fx-background-radius:100;"
+                                          maxWidth="Infinity" prefHeight="8"/>
+                                    <HBox fx:id="mathBar"
+                                          style="-fx-background-color:#f59e0b; -fx-background-radius:100;"
+                                          prefHeight="8" StackPane.alignment="CENTER_LEFT"/>
+                                </StackPane>
+                                <Label fx:id="mathLastLabel" text=""
+                                       style="-fx-font-size:10px; -fx-text-fill:#94a3b8;"/>
+                                <Button text="Continue Learning" maxWidth="Infinity"
+                                        onAction="#onContinueMath"
+                                        style="-fx-background-color:#f8fafc; -fx-background-radius:8;
+                                               -fx-text-fill:#0d7ff2; -fx-font-size:12px; -fx-font-weight:bold;
+                                               -fx-padding:7 0; -fx-cursor:hand;"/>
+                            </VBox>
+
+                            <!-- Biology Card -->
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                  style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                         -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                         -fx-padding:18; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                                <HBox alignment="CENTER_LEFT">
+                                    <StackPane style="-fx-background-color:#ffe4e6; -fx-background-radius:10;
+                                                      -fx-min-width:44; -fx-min-height:44; -fx-pref-width:44; -fx-pref-height:44;"
+                                               alignment="CENTER">
+                                        <Label text="🔬" style="-fx-font-size:20px;"/>
+                                    </StackPane>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label text="BIOLOGY"
+                                           style="-fx-font-size:10px; -fx-font-weight:bold; -fx-text-fill:#94a3b8;"/>
+                                </HBox>
+                                <Label text="Biology"
+                                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                                <Label fx:id="biologyProgressLabel" text="Loading..."
+                                       style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                                <StackPane prefHeight="8" minHeight="8" maxHeight="8">
+                                    <HBox style="-fx-background-color:#f1f5f9; -fx-background-radius:100;"
+                                          maxWidth="Infinity" prefHeight="8"/>
+                                    <HBox fx:id="biologyBar"
+                                          style="-fx-background-color:#f43f5e; -fx-background-radius:100;"
+                                          prefHeight="8" StackPane.alignment="CENTER_LEFT"/>
+                                </StackPane>
+                                <Label fx:id="biologyLastLabel" text=""
+                                       style="-fx-font-size:10px; -fx-text-fill:#94a3b8;"/>
+                                <Button text="Continue Learning" maxWidth="Infinity"
+                                        onAction="#onContinueBiology"
+                                        style="-fx-background-color:#f8fafc; -fx-background-radius:8;
+                                               -fx-text-fill:#0d7ff2; -fx-font-size:12px; -fx-font-weight:bold;
+                                               -fx-padding:7 0; -fx-cursor:hand;"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- Performance Chart -->
+                    <VBox spacing="14"
+                          style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                 -fx-padding:22; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                        <HBox alignment="CENTER_LEFT">
+                            <VBox HBox.hgrow="ALWAYS" spacing="2">
+                                <Label text="Performance Summary"
+                                       style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                                <Label text="Study hours vs accuracy (last 7 days)"
+                                       style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+                            </VBox>
+                            <ComboBox fx:id="periodCombo" onAction="#onPeriodChanged"
+                                      style="-fx-background-color:#f8fafc; -fx-border-color:transparent;
+                                             -fx-background-radius:8; -fx-font-size:13px;"/>
+                        </HBox>
+                        <StackPane fx:id="chartContainer" prefHeight="240" minHeight="240" maxWidth="Infinity"/>
+                    </VBox>
+                </VBox>
+
+                <!-- ── RIGHT COLUMN ── -->
+                <VBox minWidth="280" prefWidth="290" maxWidth="290" spacing="18">
+
+                    <!-- Daily Goal Ring -->
+                    <VBox alignment="CENTER" spacing="0"
+                          style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                 -fx-padding:22; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                        <Label text="Daily Goal"
+                               style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"
+                               maxWidth="Infinity"/>
+                        <Region prefHeight="16"/>
+                        <StackPane fx:id="goalRingContainer"
+                                   prefWidth="150" prefHeight="150"
+                                   minWidth="150" minHeight="150"
+                                   maxWidth="150" maxHeight="150"/>
+                        <Region prefHeight="10"/>
+                        <Label fx:id="goalStatusLabel" text="Loading..."
+                               style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#0f172a;"/>
+                        <Region prefHeight="4"/>
+                        <Label fx:id="goalSubLabel" text="Fetching your goal..."
+                               style="-fx-font-size:12px; -fx-text-fill:#94a3b8; -fx-text-alignment:center;"
+                               wrapText="true" maxWidth="200" textAlignment="CENTER"/>
+                        <Region prefHeight="16"/>
+                        <Button text="Start Focus Session" maxWidth="Infinity"
+                                onAction="#onStartFocus"
+                                style="-fx-background-color:#0d7ff2; -fx-background-radius:8;
+                                       -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold;
+                                       -fx-padding:11 0; -fx-cursor:hand;
+                                       -fx-effect:dropshadow(gaussian,rgba(13,127,242,0.3),10,0,0,3);"/>
+                    </VBox>
+
+                    <!-- Upcoming Tests (dynamic) -->
+                    <VBox spacing="14"
+                          style="-fx-background-color:#ffffff; -fx-background-radius:12;
+                                 -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:12;
+                                 -fx-padding:22; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                        <Label text="Upcoming Tests"
+                               style="-fx-font-size:17px; -fx-font-weight:bold; -fx-text-fill:#0f172a;"/>
+                        <VBox fx:id="upcomingTestsBox" spacing="8">
+                            <Label text="Loading..." style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+                        </VBox>
+                        <Button text="+ Book Mock Exam" maxWidth="Infinity"
+                                onAction="#onBookExam"
+                                style="-fx-background-color:transparent; -fx-background-radius:8;
+                                       -fx-border-color:#e2e8f0; -fx-border-width:2;
+                                       -fx-border-style:dashed; -fx-border-radius:8;
+                                       -fx-text-fill:#94a3b8; -fx-font-size:12px;
+                                       -fx-padding:8 0; -fx-cursor:hand;"/>
+                    </VBox>
+
+                    <!-- Need Help -->
+                    <VBox spacing="10"
+                          style="-fx-background-color:linear-gradient(to bottom right, #0d7ff2, #1d4ed8);
+                                 -fx-background-radius:12; -fx-padding:22;
+                                 -fx-effect:dropshadow(gaussian,rgba(13,127,242,0.35),18,0,0,5);">
+                        <Label text="Need Help?"
+                               style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                        <Label text="Connect with a tutor or download formula sheets for quick revision."
+                               style="-fx-font-size:12px; -fx-text-fill:#bfdbfe;" wrapText="true"/>
+                        <HBox spacing="8">
+                            <Button text="Find Tutor" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                    onAction="#onFindTutor"
+                                    style="-fx-background-color:rgba(255,255,255,0.2); -fx-background-radius:8;
+                                           -fx-text-fill:white; -fx-font-size:12px; -fx-font-weight:bold;
+                                           -fx-padding:8 0; -fx-cursor:hand;"/>
+                            <Button text="Resources" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                    onAction="#onResources"
+                                    style="-fx-background-color:rgba(255,255,255,0.2); -fx-background-radius:8;
+                                           -fx-text-fill:white; -fx-font-size:12px; -fx-font-weight:bold;
+                                           -fx-padding:8 0; -fx-cursor:hand;"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+            <Region prefHeight="32"/>
+        </VBox>
+    </ScrollPane>
+</HBox>

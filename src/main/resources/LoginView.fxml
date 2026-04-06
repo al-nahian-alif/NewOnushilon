@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.LoginController"
+      prefWidth="1000" prefHeight="660"
+      maxWidth="Infinity" maxHeight="Infinity"
+      style="-fx-background-color:#f5f7f8;">
+
+    <!-- ── LEFT PANEL (branding) ── -->
+    <VBox prefWidth="420" minWidth="380"
+          style="-fx-background-color:linear-gradient(to bottom right, #0d7ff2, #1d4ed8);
+                 -fx-padding:56 48;" spacing="0" alignment="TOP_LEFT">
+
+        <!-- Logo -->
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <StackPane style="-fx-background-color:rgba(255,255,255,0.20); -fx-background-radius:14;
+                              -fx-min-width:48; -fx-min-height:48;
+                              -fx-pref-width:48; -fx-pref-height:48;" alignment="CENTER">
+                <Label text="📖" style="-fx-font-size:24px;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="HSC Prep Pro"
+                       style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+                <Label text="Exam Excellence"
+                       style="-fx-font-size:12px; -fx-text-fill:rgba(255,255,255,0.70);"/>
+            </VBox>
+        </HBox>
+
+        <Region VBox.vgrow="ALWAYS" minHeight="60"/>
+
+        <Label text="Ace your HSC with smart practice."
+               style="-fx-font-size:30px; -fx-font-weight:900; -fx-text-fill:white;
+                      -fx-wrap-text:true;" wrapText="true" maxWidth="320"/>
+
+        <Region prefHeight="16"/>
+
+        <Label text="Personalised study plans, adaptive quizzes and real-time performance tracking — all in one place."
+               style="-fx-font-size:14px; -fx-text-fill:rgba(255,255,255,0.75); -fx-wrap-text:true;"
+               wrapText="true" maxWidth="320"/>
+
+        <Region VBox.vgrow="ALWAYS" minHeight="40"/>
+
+        <!-- Stats row -->
+        <HBox spacing="32">
+            <VBox spacing="2">
+                <Label text="10,000+" style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Questions"  style="-fx-font-size:11px; -fx-text-fill:rgba(255,255,255,0.65);"/>
+            </VBox>
+            <VBox spacing="2">
+                <Label text="4 Subjects" style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Covered"    style="-fx-font-size:11px; -fx-text-fill:rgba(255,255,255,0.65);"/>
+            </VBox>
+            <VBox spacing="2">
+                <Label text="Live XP"    style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Leaderboard" style="-fx-font-size:11px; -fx-text-fill:rgba(255,255,255,0.65);"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- ── RIGHT PANEL (form) ── -->
+    <VBox HBox.hgrow="ALWAYS" alignment="CENTER"
+          style="-fx-background-color:#f5f7f8; -fx-padding:48;">
+
+        <VBox maxWidth="380" spacing="0">
+
+            <Label text="Welcome back"
+                   style="-fx-font-size:26px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+            <Region prefHeight="6"/>
+            <Label text="Sign in to continue your HSC prep journey."
+                   style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+
+            <Region prefHeight="32"/>
+
+            <!-- DEV shortcut banner -->
+            <VBox fx:id="devBanner"
+                  style="-fx-background-color:#fef9c3; -fx-background-radius:10;
+                         -fx-border-color:#fde047; -fx-border-width:1; -fx-border-radius:10;
+                         -fx-padding:10 14; -fx-spacing:2;">
+                <Label text="🧪  Dev Mode"
+                       style="-fx-font-size:11px; -fx-font-weight:bold; -fx-text-fill:#854d0e;"/>
+                <Label text="test@hscprep.com  /  TestPass123!"
+                       style="-fx-font-size:11px; -fx-text-fill:#78350f;"/>
+            </VBox>
+
+            <Region prefHeight="20"/>
+
+            <!-- Email -->
+            <Label text="Email address"
+                   style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+            <Region prefHeight="6"/>
+            <TextField fx:id="emailField"
+                       promptText="you@example.com"
+                       style="-fx-background-color:#ffffff; -fx-background-radius:10;
+                              -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:10;
+                              -fx-font-size:13px; -fx-padding:11 14;"/>
+
+            <Region prefHeight="16"/>
+
+            <!-- Password -->
+            <Label text="Password"
+                   style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+            <Region prefHeight="6"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="••••••••"
+                           style="-fx-background-color:#ffffff; -fx-background-radius:10;
+                                  -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:10;
+                                  -fx-font-size:13px; -fx-padding:11 14;"/>
+
+            <Region prefHeight="8"/>
+
+            <!-- Error label -->
+            <Label fx:id="errorLabel" text=""
+                   style="-fx-font-size:12px; -fx-text-fill:#ef4444;" wrapText="true"/>
+
+            <Region prefHeight="20"/>
+
+            <!-- Sign In button -->
+            <Button fx:id="loginBtn" text="Sign In"
+                    maxWidth="Infinity" onAction="#onLogin"
+                    style="-fx-background-color:#0d7ff2; -fx-background-radius:10;
+                           -fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:bold;
+                           -fx-padding:12 0; -fx-cursor:hand;
+                           -fx-effect:dropshadow(gaussian,rgba(13,127,242,0.30),12,0,0,4);"/>
+
+            <Region prefHeight="12"/>
+
+            <!-- Fill dummy button -->
+            <Button text="Fill Test Credentials" maxWidth="Infinity"
+                    onAction="#onFillDummy"
+                    style="-fx-background-color:transparent; -fx-background-radius:10;
+                           -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:10;
+                           -fx-text-fill:#64748b; -fx-font-size:13px;
+                           -fx-padding:10 0; -fx-cursor:hand;"/>
+
+            <Region prefHeight="24"/>
+
+            <!-- Divider -->
+            <HBox alignment="CENTER" spacing="12">
+                <Region HBox.hgrow="ALWAYS"
+                        style="-fx-border-color:#e2e8f0; -fx-border-width:1 0 0 0;" prefHeight="1"/>
+                <Label text="Don't have an account?"
+                       style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+                <Region HBox.hgrow="ALWAYS"
+                        style="-fx-border-color:#e2e8f0; -fx-border-width:1 0 0 0;" prefHeight="1"/>
+            </HBox>
+
+            <Region prefHeight="16"/>
+
+            <Button text="Create Account" maxWidth="Infinity"
+                    onAction="#onSignUp"
+                    style="-fx-background-color:transparent; -fx-background-radius:10;
+                           -fx-border-color:#0d7ff2; -fx-border-width:1.5; -fx-border-radius:10;
+                           -fx-text-fill:#0d7ff2; -fx-font-size:13px; -fx-font-weight:600;
+                           -fx-padding:10 0; -fx-cursor:hand;"/>
+
+            <!-- Loading indicator -->
+            <ProgressIndicator fx:id="loadingSpinner"
+                               visible="false" maxWidth="28" maxHeight="28"
+                               style="-fx-progress-color:#0d7ff2;"/>
+            <Label fx:id="loadingLabel" text="Signing in..."
+                   visible="false"
+                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
+        </VBox>
+    </VBox>
+
+</HBox>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.ScheduleExamController"
+      style="-fx-background-color:#f5f7f8; -fx-padding:32;" spacing="18"
+      prefWidth="480" prefHeight="390">
+
+    <Label text="📅  Schedule Mock Exam"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
+
+    <!-- Title -->
+    <VBox spacing="6">
+        <Label text="Exam Title"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <TextField fx:id="titleField" promptText="e.g. Physics Trial 2"
+                   style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                          -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                          -fx-font-size:13px; -fx-padding:10 14;"/>
+    </VBox>
+
+    <!-- Subject -->
+    <VBox spacing="6">
+        <Label text="Subject"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <ComboBox fx:id="subjectCombo" maxWidth="Infinity"
+                  style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                         -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                         -fx-font-size:13px; -fx-padding:4;"/>
+    </VBox>
+
+    <!-- Date -->
+    <VBox spacing="6">
+        <Label text="Exam Date"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <DatePicker fx:id="datePicker" maxWidth="Infinity"
+                    style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                           -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                           -fx-font-size:13px;"/>
+    </VBox>
+
+    <!-- Description -->
+    <VBox spacing="6">
+        <Label text="Description (optional)"
+               style="-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#334155;"/>
+        <TextArea fx:id="descField" promptText="e.g. Unit 3 &amp; 4 Review"
+                  prefRowCount="2"
+                  style="-fx-background-color:#ffffff; -fx-border-color:#e2e8f0;
+                         -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                         -fx-font-size:13px; -fx-padding:10 14;"/>
+    </VBox>
+
+    <!-- Error + Buttons -->
+    <Label fx:id="errorLabel" text=""
+           style="-fx-font-size:12px; -fx-text-fill:#ef4444;" wrapText="true"/>
+
+    <HBox spacing="12">
+        <Button text="Cancel" onAction="#onCancel"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:transparent; -fx-background-radius:10;
+                       -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:10;
+                       -fx-text-fill:#475569; -fx-font-size:13px;
+                       -fx-padding:11 0; -fx-cursor:hand;"/>
+        <Button fx:id="saveBtn" text="Save Exam" onAction="#onSave"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                style="-fx-background-color:#0d7ff2; -fx-background-radius:10;
+                       -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold;
+                       -fx-padding:11 0; -fx-cursor:hand;"/>
+    </HBox>
+</VBox>

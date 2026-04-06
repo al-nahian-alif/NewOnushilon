@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.ScheduleModalController"
+      style="-fx-background-color:#f5f7f8; -fx-padding:28;" spacing="16"
+      prefWidth="560" prefHeight="500">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <Label text="📅  Your Schedule"
+               style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#0f172a;"
+               HBox.hgrow="ALWAYS"/>
+        <Button text="✕ Close" onAction="#onClose"
+                style="-fx-background-color:transparent; -fx-border-color:#e2e8f0;
+                       -fx-border-width:1; -fx-border-radius:8; -fx-background-radius:8;
+                       -fx-text-fill:#64748b; -fx-font-size:12px; -fx-padding:6 14; -fx-cursor:hand;"/>
+    </HBox>
+
+    <Label text="All upcoming scheduled tests and mock exams."
+           style="-fx-font-size:13px; -fx-text-fill:#64748b;"/>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color:#f5f7f8; -fx-background:#f5f7f8;
+                       -fx-border-color:transparent;">
+        <VBox fx:id="scheduleBox" spacing="10"
+              style="-fx-background-color:#f5f7f8; -fx-padding:4 0;">
+            <Label text="Loading..." style="-fx-font-size:12px; -fx-text-fill:#94a3b8;"/>
+        </VBox>
+    </ScrollPane>
+</VBox>

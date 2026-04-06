@@ -1,0 +1,59 @@
+{
+  "subjectId": "chem_01",
+  "subjectName": "Chemistry 1st Paper",
+  "totalQuestions": 2,
+  "chapters": [
+    {
+      "chapterId": "ch_atom_02",
+      "chapterName": "Qualitative Chemistry",
+      "questions": [
+        {
+          "id": "q_ch_301",
+          "type": "mcq",
+          "difficulty": "easy",
+          "content": {
+            "questionText": "Which quantum number determines the shape of an orbital?",
+            "options": [
+              "Principal Quantum Number (n)",
+              "Azimuthal Quantum Number (l)",
+              "Magnetic Quantum Number (m)",
+              "Spin Quantum Number (s)",
+              "None of the above"
+            ],
+            "correctOptionIndex": 1
+          },
+          "explanation": {
+            "text": "The Azimuthal Quantum Number (l) determines the subshell and the 3D shape of the orbital (e.g., s is spherical, p is dumbbell).",
+            "videoId": "vid_ch_001"
+          },
+          "meta": {
+            "avgTimeSec": 15
+          }
+        },
+        {
+          "id": "q_ch_302",
+          "type": "mcq",
+          "difficulty": "medium",
+          "content": {
+            "questionText": "What is the maximum number of electrons that can be accommodated in a 'd' subshell?",
+            "options": [
+              "2",
+              "6",
+              "10",
+              "14",
+              "18"
+            ],
+            "correctOptionIndex": 2
+          },
+          "explanation": {
+            "text": "For a 'd' subshell, the azimuthal quantum number l = 2.\nThe number of orbitals is 2l + 1 = 5.\nEach orbital holds 2 electrons.\n\nTotal electrons = 5 * 2 = 10.",
+            "videoId": "vid_ch_002"
+          },
+          "meta": {
+            "avgTimeSec": 25
+          }
+        }
+      ]
+    }
+  ]
+}
