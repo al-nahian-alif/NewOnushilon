@@ -70,11 +70,8 @@ public class DashboardController implements Initializable {
     // ── Upcoming tests container ──────────────────────────────
     @FXML private VBox upcomingTestsBox;
 
-    // ── Subject IDs (must match supabase_setup.sql seed data) ─
-    private static final String ID_PHYSICS   = "11111111-0000-0000-0000-000000000001";
-    private static final String ID_CHEMISTRY = "11111111-0000-0000-0000-000000000002";
-    private static final String ID_MATH      = "11111111-0000-0000-0000-000000000003";
-    private static final String ID_BIOLOGY   = "11111111-0000-0000-0000-000000000004";
+    // ── Dynamic Subject IDs ───────────────────────────────────
+    private final Map<String, String> subjectIds = new HashMap<>();
 
     // ── Chart data ────────────────────────────────────────────
     private double[] studyHours = new double[7];
@@ -106,7 +103,7 @@ public class DashboardController implements Initializable {
         if (uid != null) {
             Thread.ofVirtual().start(() -> {
                 loadHeader(uid);
-                loadSubjectProgress(uid);
+                loadSubjectsAndProgress(uid);
                 loadDailyGoal(uid);
                 loadUpcomingTests(uid);
                 loadPerformanceChart(uid, "Weekly");
@@ -189,45 +186,64 @@ public class DashboardController implements Initializable {
     // ════════════════════════════════════════════════════════════
     //  3.2  SUBJECT PROGRESS CARDS
     // ════════════════════════════════════════════════════════════
-    private void loadSubjectProgress(String userId) {
+    private void loadSubjectsAndProgress(String userId) {
         try {
+            // 1. Fetch real subject IDs
+            JsonNode subRows = SupabaseClient.getInstance().from("subjects").select("id,name").execute();
+            if (subRows.isArray()) {
+                for (JsonNode s : subRows) {
+                    subjectIds.put(s.path("name").asText("").toLowerCase(), s.path("id").asText(""));
+                }
+            }
+
+            // 2. Fetch total chapter counts (Needed for accurate math)
+            JsonNode chapters = SupabaseClient.getInstance().from("chapters").select("subject_id").execute();
+            Map<String, Integer> chapterCounts = new HashMap<>();
+            if (chapters.isArray()) {
+                for (JsonNode c : chapters) {
+                    chapterCounts.merge(c.path("subject_id").asText(""), 1, Integer::sum);
+                }
+            }
+
+            // 3. Fetch User Progress
             JsonNode rows = SupabaseClient.getInstance()
                     .from("user_progress")
                     .select("completed_pct,last_accessed_at,chapter:chapters(title,subject_id)")
                     .eq("user_id", userId)
                     .execute();
 
-            // Aggregate by subject
-            Map<String, List<Integer>> pcts  = new HashMap<>();
-            Map<String, String>         last  = new HashMap<>();
+            Map<String, Integer> totalPcts = new HashMap<>();
+            Map<String, String>  last      = new HashMap<>();
 
             if (rows.isArray()) {
                 for (JsonNode row : rows) {
-                    int    pct      = row.path("completed_pct").asInt(0);
+                    int pct = row.path("completed_pct").asInt(0);
                     JsonNode chapter = row.path("chapter");
-                    String subId    = chapter.path("subject_id").asText("");
-                    String title    = chapter.path("title").asText("");
+                    String subId = chapter.path("subject_id").asText("");
+                    String title = chapter.path("title").asText("");
                     if (!subId.isBlank()) {
-                        pcts.computeIfAbsent(subId, k -> new ArrayList<>()).add(pct);
-                        last.put(subId, title); // last in list = most recently fetched
+                        totalPcts.merge(subId, pct, Integer::sum);
+                        last.put(subId, title);
                     }
                 }
             }
 
-            int physPct = avg(pcts.get(ID_PHYSICS));
-            int chemPct = avg(pcts.get(ID_CHEMISTRY));
-            int mathPct = avg(pcts.get(ID_MATH));
-            int bioPct  = avg(pcts.get(ID_BIOLOGY));
+            String idPhys = subjectIds.getOrDefault("physics", "");
+            String idChem = subjectIds.getOrDefault("chemistry", "");
+            String idMath = subjectIds.getOrDefault("math advanced", "");
+            String idBio  = subjectIds.getOrDefault("biology", "");
+
+            // 4. Calculate true percentage: (Sum of all progress) / (Total Chapters)
+            int physPct = calcTruePct(totalPcts.getOrDefault(idPhys, 0), chapterCounts.getOrDefault(idPhys, 1));
+            int chemPct = calcTruePct(totalPcts.getOrDefault(idChem, 0), chapterCounts.getOrDefault(idChem, 1));
+            int mathPct = calcTruePct(totalPcts.getOrDefault(idMath, 0), chapterCounts.getOrDefault(idMath, 1));
+            int bioPct  = calcTruePct(totalPcts.getOrDefault(idBio,  0), chapterCounts.getOrDefault(idBio,  1));
 
             Platform.runLater(() -> {
-                applySubjectCard(physicsBar,   physicsProgressLabel,   physicsLastLabel,
-                        physPct, last.getOrDefault(ID_PHYSICS,   ""));
-                applySubjectCard(chemistryBar, chemistryProgressLabel, chemistryLastLabel,
-                        chemPct, last.getOrDefault(ID_CHEMISTRY, ""));
-                applySubjectCard(mathBar,      mathProgressLabel,      mathLastLabel,
-                        mathPct, last.getOrDefault(ID_MATH,      ""));
-                applySubjectCard(biologyBar,   biologyProgressLabel,   biologyLastLabel,
-                        bioPct,  last.getOrDefault(ID_BIOLOGY,   ""));
+                applySubjectCard(physicsBar,   physicsProgressLabel,   physicsLastLabel,   physPct, last.getOrDefault(idPhys, ""));
+                applySubjectCard(chemistryBar, chemistryProgressLabel, chemistryLastLabel, chemPct, last.getOrDefault(idChem, ""));
+                applySubjectCard(mathBar,      mathProgressLabel,      mathLastLabel,      mathPct, last.getOrDefault(idMath, ""));
+                applySubjectCard(biologyBar,   biologyProgressLabel,   biologyLastLabel,   bioPct,  last.getOrDefault(idBio,  ""));
             });
 
         } catch (Exception e) {
@@ -240,27 +256,41 @@ public class DashboardController implements Initializable {
         }
     }
 
+    private int calcTruePct(int sumOfPcts, int totalChapters) {
+        if (totalChapters <= 0) return 0;
+        return sumOfPcts / totalChapters;
+    }
+
     private void applySubjectCard(HBox bar, Label progLabel, Label lastLabel,
                                   int pct, String chapTitle) {
         progLabel.setText(pct + "% of Syllabus completed");
         if (!chapTitle.isBlank()) lastLabel.setText("Last: " + chapTitle);
 
-        // Animate bar once parent width is known
-        bar.getParent().layoutBoundsProperty().addListener((obs, ov, nv) -> {
-            double pw = nv.getWidth();
-            if (pw > 4 && bar.getPrefWidth() < 1) {
-                Timeline tl = new Timeline(
-                        new KeyFrame(Duration.ZERO,        new KeyValue(bar.prefWidthProperty(), 0)),
-                        new KeyFrame(Duration.millis(700), new KeyValue(bar.prefWidthProperty(), pw * pct / 100.0))
-                );
-                tl.play();
-            }
-        });
+        // Stop StackPane from forcing 100% width
+        bar.setPrefWidth(0);
+        bar.setMaxWidth(Region.USE_PREF_SIZE);
+
+        Region parent = (Region) bar.getParent();
+
+        // If the screen is already drawn, animate immediately
+        if (parent.getWidth() > 0) {
+            playBarAnimation(bar, parent.getWidth(), pct);
+        } else {
+            // Otherwise, wait for the layout pass
+            parent.widthProperty().addListener((obs, ov, nv) -> {
+                if (nv.doubleValue() > 0 && bar.getPrefWidth() <= 0) {
+                    playBarAnimation(bar, nv.doubleValue(), pct);
+                }
+            });
+        }
     }
 
-    private int avg(List<Integer> vals) {
-        if (vals == null || vals.isEmpty()) return 0;
-        return (int) vals.stream().mapToInt(Integer::intValue).average().orElse(0);
+    private void playBarAnimation(HBox bar, double parentWidth, int pct) {
+        Timeline tl = new Timeline(
+                new KeyFrame(Duration.ZERO,        new KeyValue(bar.prefWidthProperty(), 0)),
+                new KeyFrame(Duration.millis(700), new KeyValue(bar.prefWidthProperty(), parentWidth * pct / 100.0))
+        );
+        tl.play();
     }
 
     // ════════════════════════════════════════════════════════════
@@ -589,12 +619,10 @@ public class DashboardController implements Initializable {
     //  BUTTON ACTIONS
     // ════════════════════════════════════════════════════════════
 
-    /** 3.1.1 — View Schedule */
     @FXML private void onViewSchedule() {
         openModal("/ScheduleModal.fxml", "View Schedule", 560, 500);
     }
 
-    /** 3.1.2 — Start Quick Quiz */
     @FXML private void onStartQuiz() {
         String uid = SessionManager.getInstance().getUserId();
         if (uid == null) return;
@@ -640,7 +668,6 @@ public class DashboardController implements Initializable {
         });
     }
 
-    /** 3.4 — Start Focus Session */
     @FXML private void onStartFocus() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FocusSessionModal.fxml"));
@@ -655,15 +682,16 @@ public class DashboardController implements Initializable {
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initOwner(welcomeLabel.getScene().getWindow());
             modal.setTitle("Focus Session");
-            modal.setScene(new Scene(root, 440, 400));
-            modal.setResizable(false);
+
+            // Increased height to 550 and enabled resizing
+            modal.setScene(new Scene(root, 440, 550));
+            modal.setResizable(true);
             modal.show();
         } catch (Exception e) {
             System.err.println("[FocusModal] " + e.getMessage());
         }
     }
 
-    /** 3.5 — Book Mock Exam */
     @FXML private void onBookExam() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ScheduleExamModal.fxml"));
@@ -677,21 +705,21 @@ public class DashboardController implements Initializable {
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initOwner(welcomeLabel.getScene().getWindow());
             modal.setTitle("Schedule Mock Exam");
-            modal.setScene(new Scene(root, 480, 390));
-            modal.setResizable(false);
+
+            // Increased height to 550 and enabled resizing
+            modal.setScene(new Scene(root, 480, 550));
+            modal.setResizable(true);
             modal.show();
         } catch (Exception e) {
             System.err.println("[BookExam] " + e.getMessage());
         }
     }
 
-    /** 3.6 — Find Tutor */
     @FXML private void onFindTutor() {
         try { Desktop.getDesktop().browse(new URI("https://www.google.com/search?q=HSC+tutor")); }
         catch (Exception e) { System.err.println("[Tutor] " + e.getMessage()); }
     }
 
-    /** 3.6 — Resources */
     @FXML private void onResources() {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setHeaderText("Formula Sheets & Resources");
@@ -699,26 +727,29 @@ public class DashboardController implements Initializable {
         a.showAndWait();
     }
 
-    /** Chart period toggle */
     @FXML private void onPeriodChanged() {
         String uid = SessionManager.getInstance().getUserId();
         if (uid != null)
             Thread.ofVirtual().start(() -> loadPerformanceChart(uid, periodCombo.getValue()));
     }
 
-    /** Subject continue buttons */
-    @FXML private void onContinuePhysics()   { navigateToSubjects(ID_PHYSICS);   }
-    @FXML private void onContinueChemistry() { navigateToSubjects(ID_CHEMISTRY); }
-    @FXML private void onContinueMath()      { navigateToSubjects(ID_MATH);      }
-    @FXML private void onContinueBiology()   { navigateToSubjects(ID_BIOLOGY);   }
-    @FXML private void onViewAllSubjects()   { navigateToSubjects(null);         }
+    @FXML private void onContinuePhysics()   { navigateToSubjects(subjectIds.get("physics"));   }
+    @FXML private void onContinueChemistry() { navigateToSubjects(subjectIds.get("chemistry")); }
+    @FXML private void onContinueMath()      { navigateToSubjects(subjectIds.get("math advanced")); }
+    @FXML private void onContinueBiology()   { navigateToSubjects(subjectIds.get("biology"));   }
+    @FXML private void onViewAllSubjects()   { navigateToSubjects(null); }
 
     private void navigateToSubjects(String subjectId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/SubjectsView.fxml"));
             Parent root = loader.load();
             SubjectsController ctrl = loader.getController();
-            if (subjectId != null) ctrl.preselectSubject(subjectId);
+
+            // Check if the map gave us a valid ID before trying to pass it
+            if (subjectId != null && !subjectId.isBlank()) {
+                ctrl.preselectSubject(subjectId);
+            }
+
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         } catch (Exception e) {
@@ -726,7 +757,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // ── Generic modal helper ──────────────────────────────────
     private void openModal(String fxmlPath, String title, int w, int h) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -734,8 +764,10 @@ public class DashboardController implements Initializable {
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initOwner(welcomeLabel.getScene().getWindow());
             modal.setTitle(title);
-            modal.setScene(new Scene(root, w, h));
-            modal.setResizable(false);
+
+            // Bumping up the height slightly and enabling resizing just in case
+            modal.setScene(new Scene(root, w, h + 100));
+            modal.setResizable(true);
             modal.show();
         } catch (Exception e) {
             System.err.println("[Modal " + fxmlPath + "] " + e.getMessage());

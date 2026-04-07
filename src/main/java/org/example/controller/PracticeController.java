@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.controller.SidebarController;
 import org.example.supabase.SessionManager;
 import org.example.supabase.SupabaseClient;
 
@@ -90,54 +91,52 @@ public class PracticeController implements Initializable {
     }
 
     // ════════════════════════════════════════════════════════════
-    //  LOAD ALL (parallel)
+    //  LOAD ALL (Independent & Safe)
     // ════════════════════════════════════════════════════════════
     private void loadAll(String uid) {
-        try {
-            String today = LocalDate.now().toString();
-            var client = SupabaseClient.getInstance();
-            var results = client.fetchAll(Map.of(
-                    "profile",   client.from("profiles")
-                            .select("xp,streak,level")
-                            .eq("user_id", uid).limit(1),
-                    "goal",      client.from("daily_goals")
-                            .select("completed_questions,target_questions")
-                            .eq("user_id", uid).eq("date", today).limit(1),
-                    "attempts",  client.from("question_attempts")
-                            .select("is_correct,attempted_at,question:questions(chapter_id)")
-                            .eq("user_id", uid)
-                            .gte("attempted_at", today + "T00:00:00"),
-                    "mistakes",  client.from("mistake_bank")
-                            .select("question_id").eq("user_id", uid),
-                    "sessions",  client.from("study_sessions")
-                            .select("duration_mins,started_at,subject:subjects(name,color)")
-                            .eq("user_id", uid)
-                            .order("started_at", false).limit(5),
-                    "leaderTop", client.from("profiles")
-                            .select("user_id,name,xp")
-                            .order("xp", false).limit(5),
-                    "allAttempts", client.from("question_attempts")
-                            .select("is_correct")
-                            .eq("user_id", uid)
-                            .gte("attempted_at", "2020-01-01T00:00:00")
-            ));
+        String today = LocalDate.now().toString();
+        var client = SupabaseClient.getInstance();
 
-            processStats(uid, results.get("profile"), results.get("goal"),
-                    results.get("attempts"), results.get("allAttempts"));
-            processRecommended(uid, results.get("attempts"), results.get("mistakes"));
-            processDailyChallengeStatus(results.get("goal"));
-            processWeakAreaStatus(results.get("mistakes"));
-            processRecentSessions(results.get("sessions"));
-            processStudyTools(results.get("mistakes"), results.get("allAttempts"));
-            processLeaderboard(uid, results.get("leaderTop"));
-            loadSubjectsForMockExam();
+        JsonNode profile = null;
+        try { profile = client.from("profiles").select("xp,streak,level").eq("user_id", uid).limit(1).execute(); }
+        catch (Exception e) { System.err.println("Profile fetch err: " + e.getMessage()); }
 
-            // Start leaderboard polling
-            Platform.runLater(() -> startLeaderboardPoll(uid));
+        JsonNode goal = null;
+        try { goal = client.from("daily_goals").select("completed_questions,target_questions").eq("user_id", uid).eq("date", today).limit(1).execute(); }
+        catch (Exception e) { System.err.println("Goal fetch err: " + e.getMessage()); }
 
-        } catch (Exception e) {
-            System.err.println("[Practice loadAll] " + e.getMessage());
-        }
+        JsonNode attempts = null;
+        try { attempts = client.from("question_attempts").select("is_correct,attempted_at,question:questions(chapter_id)").eq("user_id", uid).gte("attempted_at", today + "T00:00:00").execute(); }
+        catch (Exception e) { System.err.println("Attempts fetch err: " + e.getMessage()); }
+
+        JsonNode mistakes = null;
+        try { mistakes = client.from("mistake_bank").select("question_id").eq("user_id", uid).execute(); }
+        catch (Exception e) { System.err.println("Mistakes fetch err: " + e.getMessage()); }
+
+        JsonNode sessions = null;
+        try { sessions = client.from("study_sessions").select("duration_mins,started_at,subject:subjects(name,color)").eq("user_id", uid).order("started_at", false).limit(5).execute(); }
+        catch (Exception e) { System.err.println("Sessions fetch err: " + e.getMessage()); }
+
+        JsonNode leaderTop = null;
+        try { leaderTop = client.from("profiles").select("user_id,name,xp").order("xp", false).limit(5).execute(); }
+        catch (Exception e) { System.err.println("Leaderboard fetch err: " + e.getMessage()); }
+
+        JsonNode allAttempts = null;
+        try { allAttempts = client.from("question_attempts").select("is_correct").eq("user_id", uid).gte("attempted_at", "2020-01-01T00:00:00").execute(); }
+        catch (Exception e) { System.err.println("AllAttempts fetch err: " + e.getMessage()); }
+
+        // Process data even if some queries failed
+        processStats(uid, profile, goal, attempts, allAttempts);
+        processRecommended(uid, attempts, mistakes);
+        processDailyChallengeStatus(goal);
+        processWeakAreaStatus(mistakes);
+        processRecentSessions(sessions);
+        processStudyTools(mistakes, allAttempts);
+        processLeaderboard(uid, leaderTop);
+        loadSubjectsForMockExam();
+
+        // Start leaderboard polling
+        Platform.runLater(() -> startLeaderboardPoll(uid));
     }
 
     // ════════════════════════════════════════════════════════════
@@ -308,20 +307,32 @@ public class PracticeController implements Initializable {
     // ════════════════════════════════════════════════════════════
     private void processRecentSessions(JsonNode sessions) {
         List<javafx.scene.Node> rows = new ArrayList<>();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d, yyyy  HH:mm");
 
         if (sessions != null && sessions.isArray() && sessions.size() > 0) {
             for (JsonNode s : sessions) {
                 int    mins    = s.path("duration_mins").asInt(0);
                 String atStr   = s.path("started_at").asText("");
-                String subjName= s.path("subject").path("name").asText("General");
-                String subjColor = s.path("subject").path("color").asText("#0d7ff2");
+
+                // Safe JSON parsing for null subjects in the DB
+                String subjName = "General";
+                String subjColor = "#0d7ff2";
+                JsonNode subjNode = s.path("subject");
+                if (subjNode != null && !subjNode.isMissingNode() && !subjNode.isNull()) {
+                    String n = subjNode.path("name").asText("");
+                    String c = subjNode.path("color").asText("");
+                    if (!n.isBlank()) subjName = n;
+                    if (!c.isBlank()) subjColor = c;
+                }
 
                 String dateLabel = "";
-                try { dateLabel = atStr.length() >= 16
-                        ? atStr.substring(0, 10) + "  " + atStr.substring(11, 16)
-                        : atStr; }
-                catch (Exception ignored) {}
+                try {
+                    if (atStr.length() >= 16) {
+                        // Extracts e.g., "2026-03-20  15:42"
+                        dateLabel = atStr.substring(0, 10) + "  " + atStr.substring(11, 16);
+                    } else {
+                        dateLabel = atStr;
+                    }
+                } catch (Exception ignored) {}
 
                 HBox row = buildSessionRow(subjName, subjColor, mins, dateLabel);
                 rows.add(row);

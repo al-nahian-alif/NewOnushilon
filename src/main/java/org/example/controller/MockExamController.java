@@ -17,7 +17,10 @@ public class MockExamController implements Initializable {
     @FXML private Label  infoLabel, errorLabel;
 
     private int selectedDuration = 60; // minutes
-    private List<PracticeController.Subject> subjects;
+
+    public void setSubjects(List<PracticeController.Subject> subjects) {
+    }
+//    private List<PracticeController.Subject> subjects;
 
     // Callback: (subjectId, subjectName, durationMins)
     @FunctionalInterface
@@ -30,15 +33,15 @@ public class MockExamController implements Initializable {
     record Subject(String id, String name) {}
     private final java.util.Map<String, String> subjectIdMap = new java.util.LinkedHashMap<>();
 
-    public void setSubjects(List<PracticeController.Subject> list) {
-        this.subjects = list;
-        subjectCombo.getItems().add("All Subjects");
-        for (var s : list) {
-            subjectCombo.getItems().add(s.icon() + "  " + s.name());
-            subjectIdMap.put(s.icon() + "  " + s.name(), s.id());
-        }
-        subjectCombo.setValue("All Subjects");
-    }
+//    public void setSubjects(List<PracticeController.Subject> list) {
+//        this.subjects = list;
+//        subjectCombo.getItems().add("All Subjects");
+//        for (var s : list) {
+//            subjectCombo.getItems().add(s.icon() + "  " + s.name());
+//            subjectIdMap.put(s.icon() + "  " + s.name(), s.id());
+//        }
+//        subjectCombo.setValue("All Subjects");
+//    }
 
     public void setOnStart(ExamStartCallback cb) { this.onStart = cb; }
 

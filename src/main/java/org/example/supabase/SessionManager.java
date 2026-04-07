@@ -110,4 +110,7 @@ public class SessionManager {
         if (userId == null) return "HSC-00000000";
         return "HSC-" + userId.replace("-", "").substring(0, 8).toUpperCase();
     }
+
+    public void setSession(String uid, String newName) {
+    }
 }

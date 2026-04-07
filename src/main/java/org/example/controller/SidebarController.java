@@ -34,7 +34,6 @@ public class SidebarController implements Initializable {
     @FXML private Button btnDashboard;
     @FXML private Button btnSubjects;
     @FXML private Button btnPractice;
-    @FXML private Button btnPerformance;
     @FXML private Button btnSettings;
 
     // ── Daily goal ────────────────────────────────────────────
@@ -150,15 +149,13 @@ public class SidebarController implements Initializable {
     // ════════════════════════════════════════════════════════════
     public void setActivePage(String page) {
         List<Button> all = List.of(
-                btnDashboard, btnSubjects, btnPractice, btnPerformance, btnSettings);
+                btnDashboard, btnSubjects, btnPractice, btnSettings);
         all.forEach(b -> b.setStyle(INACTIVE));
 
         switch (page) {
             case "dashboard"   -> btnDashboard  .setStyle(ACTIVE);
             case "subjects"    -> btnSubjects   .setStyle(ACTIVE);
             case "practice"    -> btnPractice   .setStyle(ACTIVE);
-            case "performance",
-                 "tests"       -> btnPerformance.setStyle(ACTIVE);
             case "settings",
                  "profile"     -> btnSettings   .setStyle(ACTIVE);
         }
@@ -170,16 +167,21 @@ public class SidebarController implements Initializable {
     @FXML private void onDashboard()   { go("/DashboardView.fxml");   }
     @FXML private void onSubjects()    { go("/SubjectsView.fxml");    }
     @FXML private void onPractice()    { go("/PracticeView.fxml");    }
-    @FXML private void onPerformance() { go("/PerformanceView.fxml"); }
     @FXML private void onSettings()    { go("/SettingsView.fxml");    }
 
     private void go(String fxmlPath) {
         try {
             URL url = getClass().getResource(fxmlPath);
-            if (url == null) { System.err.println("[Sidebar] Not found: " + fxmlPath); return; }
+            if (url == null) {
+                System.err.println("[Sidebar] Not found: " + fxmlPath);
+                return;
+            }
+
             Parent root = FXMLLoader.load(url);
-            Stage  stage = (Stage) btnDashboard.getScene().getWindow();
-            stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+
+            // FIX: Just swap the root of the existing scene instead of making a new one
+            btnDashboard.getScene().setRoot(root);
+
         } catch (Exception e) {
             System.err.println("[Sidebar nav] " + e.getMessage());
             e.printStackTrace();

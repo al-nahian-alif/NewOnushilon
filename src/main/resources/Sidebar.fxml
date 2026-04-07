@@ -65,16 +65,6 @@
             </graphic>
         </Button>
 
-        <Button fx:id="btnPerformance" text="Performance"
-                maxWidth="Infinity" onAction="#onPerformance"
-                style="-fx-background-color:transparent; -fx-background-radius:8;
-                       -fx-text-fill:#475569; -fx-font-size:13px; -fx-font-weight:500;
-                       -fx-padding:9 14; -fx-alignment:CENTER_LEFT; -fx-cursor:hand;">
-            <graphic>
-                <Label text="📊" style="-fx-font-size:16px;"/>
-            </graphic>
-        </Button>
-
         <Button fx:id="btnSettings" text="Settings"
                 maxWidth="Infinity" onAction="#onSettings"
                 style="-fx-background-color:transparent; -fx-background-radius:8;

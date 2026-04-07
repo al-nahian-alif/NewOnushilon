@@ -148,13 +148,27 @@ public class LoginController implements Initializable {
     }
 
     // ── Sign Up ───────────────────────────────────────────────
-    @FXML private void onSignUp() {
-        // TODO: open SignupView or expand this form
-        showError("");
-        emailField.clear();
-        passwordField.clear();
-        emailField.setPromptText("Enter your email to register");
-        showError("Sign up flow coming in next sprint. Use test credentials for now.");
+// ── Sign Up ───────────────────────────────────────────────
+    @FXML
+    private void onSignUp() {
+        try {
+            // Make sure the name matches exactly what you named the new FXML file
+            URL fxml = getClass().getResource("/Signup.fxml");
+            if (fxml == null) {
+                showError("Signup.fxml not found. Check your resources folder.");
+                return;
+            }
+            Parent root = FXMLLoader.load(fxml);
+            Stage stage = (Stage) loginBtn.getScene().getWindow();
+
+            // Keep the same window size when switching scenes
+            Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            showError("Failed to load sign up page: " + e.getMessage());
+            e.printStackTrace(); // This will print the exact error to your console if it fails
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────

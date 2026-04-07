@@ -47,6 +47,7 @@ public class SubjectsController implements Initializable {
     private String  activeSubjectId   = null;
     private String  activeSubjectName = "Physics";
     private boolean isListView        = true;   // 4.4 — persisted in memory
+    private String  pendingSubjectId  = null;   // Fix for race condition from dashboard
 
     // Tab button references keyed by subject id
     private final Map<String, Button> tabButtons = new LinkedHashMap<>();
@@ -124,15 +125,25 @@ public class SubjectsController implements Initializable {
 
             Platform.runLater(() -> {
                 buildTabs();
-                // Select first subject by default (or remembered one)
                 if (!subjects.isEmpty()) {
-                    String remembered = SessionManager.getInstance().getUserId() != null
-                            ? activeSubjectId : null;
-                    Subject first = subjects.stream()
-                            .filter(s -> s.id().equals(remembered))
-                            .findFirst()
-                            .orElse(subjects.get(0));
-                    selectSubject(first);
+                    // Check if a specific subject was requested by the Dashboard
+                    if (pendingSubjectId != null) {
+                        Subject target = subjects.stream()
+                                .filter(s -> s.id().equals(pendingSubjectId))
+                                .findFirst()
+                                .orElse(subjects.get(0));
+                        selectSubject(target);
+                        pendingSubjectId = null; // Reset it
+                    } else {
+                        // Default behavior
+                        String remembered = SessionManager.getInstance().getUserId() != null
+                                ? activeSubjectId : null;
+                        Subject first = subjects.stream()
+                                .filter(s -> s.id().equals(remembered))
+                                .findFirst()
+                                .orElse(subjects.get(0));
+                        selectSubject(first);
+                    }
                 }
             });
 
@@ -178,10 +189,16 @@ public class SubjectsController implements Initializable {
 
     /** Called from DashboardController.navigateToSubjects() */
     public void preselectSubject(String subjectId) {
-        subjects.stream()
-                .filter(s -> s.id().equals(subjectId))
-                .findFirst()
-                .ifPresent(this::selectSubject);
+        if (subjects.isEmpty()) {
+            // Data hasn't loaded from the background thread yet, save it for later
+            pendingSubjectId = subjectId;
+        } else {
+            // Data is already loaded, execute immediately
+            subjects.stream()
+                    .filter(s -> s.id().equals(subjectId))
+                    .findFirst()
+                    .ifPresent(this::selectSubject);
+        }
     }
 
     // ════════════════════════════════════════════════════════════
@@ -190,7 +207,6 @@ public class SubjectsController implements Initializable {
     private void loadSmartReview(String userId, String subjectId, String subjectName) {
         try {
             // ── HIGH IMPACT: chapter with most mistakes ──────────────
-            // Fetch mistake_bank for this subject's chapters
             JsonNode mistakes = SupabaseClient.getInstance()
                     .from("mistake_bank")
                     .select("question:questions(chapter:chapters(id,title,subject_id))")
@@ -410,7 +426,6 @@ public class SubjectsController implements Initializable {
             }
 
             // Fetch question_attempts for improvement calculation
-            // This week vs last week accuracy per chapter
             String weekAgo     = LocalDate.now().minusDays(7).toString()  + "T00:00:00";
             String twoWeeksAgo = LocalDate.now().minusDays(14).toString() + "T00:00:00";
 
@@ -564,6 +579,8 @@ public class SubjectsController implements Initializable {
         trackBg.setStyle("-fx-background-color:#f1f5f9; -fx-background-radius:100;");
         HBox fill = new HBox();
         fill.setPrefHeight(6);
+        fill.setPrefWidth(0);
+        fill.setMaxWidth(Region.USE_PREF_SIZE);
         fill.setStyle("-fx-background-color:#0d7ff2; -fx-background-radius:100;");
         StackPane.setAlignment(fill, Pos.CENTER_LEFT);
         track.getChildren().addAll(trackBg, fill);
@@ -736,16 +753,29 @@ public class SubjectsController implements Initializable {
 
     // ── Animate progress bar ──────────────────────────────────
     private void animateBar(HBox fill, StackPane track, int pct) {
-        track.widthProperty().addListener((obs, ov, nv) -> {
-            double pw = nv.doubleValue();
-            if (pw > 4 && fill.getPrefWidth() < 1) {
-                Timeline tl = new Timeline(
-                        new KeyFrame(Duration.ZERO,        new KeyValue(fill.prefWidthProperty(), 0)),
-                        new KeyFrame(Duration.millis(600), new KeyValue(fill.prefWidthProperty(), pw * pct / 100.0))
-                );
-                tl.play();
-            }
-        });
+        // Stop StackPane from forcing 100% width
+        fill.setPrefWidth(0);
+        fill.setMaxWidth(Region.USE_PREF_SIZE);
+
+        // If the screen is already drawn, animate immediately
+        if (track.getWidth() > 0) {
+            playBarAnimation(fill, track.getWidth(), pct);
+        } else {
+            // Otherwise, wait for the layout pass
+            track.widthProperty().addListener((obs, ov, nv) -> {
+                if (nv.doubleValue() > 0 && fill.getPrefWidth() <= 0) {
+                    playBarAnimation(fill, nv.doubleValue(), pct);
+                }
+            });
+        }
+    }
+
+    private void playBarAnimation(HBox bar, double parentWidth, int pct) {
+        Timeline tl = new Timeline(
+                new KeyFrame(Duration.ZERO,        new KeyValue(bar.prefWidthProperty(), 0)),
+                new KeyFrame(Duration.millis(600), new KeyValue(bar.prefWidthProperty(), parentWidth * pct / 100.0))
+        );
+        tl.play();
     }
 
     // ════════════════════════════════════════════════════════════
@@ -758,7 +788,6 @@ public class SubjectsController implements Initializable {
         gridViewBtn.setStyle(VIEW_INACTIVE);
         tableHeader.setVisible(true);
         tableHeader.setManaged(true);
-        // Reload in list mode
         if (activeSubjectId != null) {
             setLoading(true);
             String uid = SessionManager.getInstance().getUserId();
@@ -790,7 +819,6 @@ public class SubjectsController implements Initializable {
     }
 
     private void onFlashcards(String chapterId, String chapterName) {
-        // FlashcardView coming in next sprint
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setHeaderText("Flashcards");
         a.setContentText("FlashcardView for: " + chapterName + "\nComing in next sprint!");

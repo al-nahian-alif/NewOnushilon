@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.controller.QuestionNavigator;
 import org.example.supabase.SessionManager;
 import org.example.supabase.SupabaseClient;
 
@@ -84,7 +85,7 @@ public class PerformanceController implements Initializable {
 
     // ════════════════════════════════════════════════════════════
     //  PARALLEL LOAD
-    //  FIX: removed leaderboard_cache — now uses profiles directly
+    //  FIX: restored leaderboard_cache for accurate realtime xp & global rank
     // ════════════════════════════════════════════════════════════
     private void loadAllParallel(String uid, String period) {
         try {
@@ -101,14 +102,18 @@ public class PerformanceController implements Initializable {
 
             var client  = SupabaseClient.getInstance();
             var results = client.fetchAll(Map.of(
-                    // Profile: XP + streak
+                    // Profile: Streak fallback & Level
                     "profile",      client.from("profiles")
                             .select("xp,streak,level")
                             .eq("user_id", uid).limit(1),
-                    // Leaderboard: top 5 from profiles ordered by XP (no leaderboard_cache)
-                    "leaderTop",    client.from("profiles")
-                            .select("user_id,name,xp,streak,level")
-                            .order("xp", false).limit(5),
+                    // Leaderboard: top 5 from cache, joining profiles for the name
+                    "leaderTop",    client.from("leaderboard_cache")
+                            .select("user_id,xp,rank,profiles(name)")
+                            .order("rank", true).limit(5),
+                    // Current User's realtime cache entry
+                    "myCache",      client.from("leaderboard_cache")
+                            .select("xp,rank")
+                            .eq("user_id", uid).limit(1),
                     // This period's attempts
                     "attempts",     client.from("question_attempts")
                             .select("is_correct,attempted_at,question:questions(chapter_id)")
@@ -128,16 +133,23 @@ public class PerformanceController implements Initializable {
                             .eq("user_id", uid)
             ));
 
-            // FIX: calculate rank from profiles (count users with more XP)
             int myXp = 0;
             JsonNode profile = results.get("profile");
-            if (profile != null && profile.isArray() && profile.size() > 0)
+            if (profile != null && profile.isArray() && profile.size() > 0) {
                 myXp = profile.get(0).path("xp").asInt(0);
+            }
 
-            int globalRank = calculateRank(uid, myXp);
+            int globalRank = 0;
+            JsonNode myCache = results.get("myCache");
+            if (myCache != null && myCache.isArray() && myCache.size() > 0) {
+                myXp = myCache.get(0).path("xp").asInt(myXp); // Prioritize cache XP
+                globalRank = myCache.get(0).path("rank").asInt(0);
+            } else {
+                globalRank = calculateRank(uid, myXp);
+            }
 
             processStats(results.get("profile"), globalRank,
-                    results.get("attempts"), results.get("prevAttempts"));
+                    results.get("attempts"), results.get("prevAttempts"), myXp);
             processLeaderboard(uid, results.get("leaderTop"));
             processAchievements(uid, results.get("achievements"), results.get("userAchieve"));
             processGrowthTip(uid, results.get("attempts"));
@@ -152,8 +164,7 @@ public class PerformanceController implements Initializable {
     }
 
     // ════════════════════════════════════════════════════════════
-    //  RANK CALCULATION
-    //  Counts how many profiles have MORE XP than current user
+    //  RANK CALCULATION (Fallback)
     // ════════════════════════════════════════════════════════════
     private int calculateRank(String uid, int myXp) {
         try {
@@ -164,20 +175,18 @@ public class PerformanceController implements Initializable {
                     .execute();
             return (higher.isArray() ? higher.size() : 0) + 1;
         } catch (Exception e) {
-            System.err.println("[Rank] " + e.getMessage());
-            return 1;
+            System.err.println("[Rank Fallback] " + e.getMessage());
+            return 0; // Return 0 to display "Unranked"
         }
     }
 
     // ════════════════════════════════════════════════════════════
     //  6.1  STAT CARDS
-    //  FIX: rank now passed as int (not from leaderboard_cache)
     // ════════════════════════════════════════════════════════════
     private void processStats(JsonNode profile, int globalRank,
-                              JsonNode attempts, JsonNode prevAttempts) {
-        int xp = 0, streak = 0;
+                              JsonNode attempts, JsonNode prevAttempts, int currentXp) {
+        int streak = 0;
         if (profile != null && profile.isArray() && profile.size() > 0) {
-            xp     = profile.get(0).path("xp").asInt(0);
             streak = profile.get(0).path("streak").asInt(0);
         }
 
@@ -186,7 +195,7 @@ public class PerformanceController implements Initializable {
         int   accChange = thisAcc[0] - prevAcc[0];
         int   xpGain   = (attempts != null && attempts.isArray()) ? attempts.size() * 10 : 0;
 
-        final int fxp = xp, frank = globalRank, facc = thisAcc[0],
+        final int fxp = currentXp, frank = globalRank, facc = thisAcc[0],
                 fstreak = streak, fxpGain = xpGain, faccChange = accChange;
 
         Platform.runLater(() -> {
@@ -241,7 +250,6 @@ public class PerformanceController implements Initializable {
 
     // ════════════════════════════════════════════════════════════
     //  6.2  LEADERBOARD
-    //  FIX: reads from profiles directly (name, xp, user_id)
     // ════════════════════════════════════════════════════════════
     private void processLeaderboard(String uid, JsonNode topRows) {
         List<javafx.scene.Node> nodes = new ArrayList<>();
@@ -250,13 +258,21 @@ public class PerformanceController implements Initializable {
         if (topRows != null && topRows.isArray()) {
             String[] rankColors = {"#f59e0b","#94a3b8","#cd7c3f","#0d7ff2","#64748b"};
             int idx = 0;
+
             for (JsonNode entry : topRows) {
                 String entryUid = entry.path("user_id").asText("");
-                // FIX: name is now directly on the row (not nested under "profile")
-                String name     = entry.path("name").asText("");
+
+                String name = "";
+                if (entry.has("profiles") && !entry.path("profiles").isNull()) {
+                    name = entry.path("profiles").path("name").asText("");
+                } else if (entry.has("name")) {
+                    name = entry.path("name").asText(""); // Fallback if pulled from profiles table directly
+                }
+
                 if (name.isBlank()) name = "Student #" + (idx + 1);
+
                 int     xp      = entry.path("xp").asInt(0);
-                int     rank    = idx + 1; // derived from ORDER BY xp DESC
+                int     rank    = entry.path("rank").asInt(idx + 1);
                 boolean isMe    = entryUid.equals(uid);
 
                 nodes.add(buildLeaderboardRow(
@@ -438,7 +454,6 @@ public class PerformanceController implements Initializable {
 
     // ════════════════════════════════════════════════════════════
     //  ACHIEVEMENT UNLOCK CHECK
-    //  FIX: was using undefined `totalCorrect` — now uses `correctTotal`
     // ════════════════════════════════════════════════════════════
     private void checkNewAchievements(String uid, JsonNode attempts,
                                       JsonNode userAchievements, JsonNode allAchievements) {
@@ -449,7 +464,6 @@ public class PerformanceController implements Initializable {
             for (JsonNode ua : userAchievements)
                 alreadyUnlocked.add(ua.path("achievement_id").asText());
 
-        // FIX: correctly named variable
         int correctTotal = 0;
         if (attempts.isArray())
             for (JsonNode a : attempts)
@@ -462,7 +476,6 @@ public class PerformanceController implements Initializable {
             String key = a.path("key").asText();
             if (alreadyUnlocked.contains(aid)) continue;
 
-            // FIX: uses correctTotal (not totalCorrect)
             boolean shouldUnlock = switch (key) {
                 case "concept_master" -> correctTotal >= 50;
                 case "fire_15"        -> streak >= 15;
@@ -619,7 +632,7 @@ public class PerformanceController implements Initializable {
 
     // ════════════════════════════════════════════════════════════
     //  REALTIME POLLING
-    //  FIX: polls profiles directly (not leaderboard_cache)
+    //  FIX: Polls leaderboard_cache and updates User's stats
     // ════════════════════════════════════════════════════════════
     private void startRealtimePolling(String uid) {
         realtimeDot.setStyle("-fx-font-size:10px; -fx-text-fill:#22c55e;");
@@ -634,12 +647,31 @@ public class PerformanceController implements Initializable {
 
     private void refreshLeaderboard(String uid) {
         try {
-            // FIX: now queries profiles directly
+            // Fetch updated top 5 from cache
             JsonNode top = SupabaseClient.getInstance()
-                    .from("profiles")
-                    .select("user_id,name,xp,streak,level")
-                    .order("xp", false).limit(5).execute();
+                    .from("leaderboard_cache")
+                    .select("user_id,xp,rank,profiles(name)")
+                    .order("rank", true).limit(5).execute();
             processLeaderboard(uid, top);
+
+            // Fetch realtime XP/Rank for current user to update Stat Cards
+            JsonNode myCache = SupabaseClient.getInstance()
+                    .from("leaderboard_cache")
+                    .select("xp,rank")
+                    .eq("user_id", uid).limit(1).execute();
+
+            if (myCache != null && myCache.isArray() && myCache.size() > 0) {
+                int currentXp = myCache.get(0).path("xp").asInt(0);
+                int currentRank = myCache.get(0).path("rank").asInt(0);
+
+                Platform.runLater(() -> {
+                    xpLabel.setText(String.format("%,d", currentXp));
+                    if (currentRank > 0) {
+                        rankLabel.setText("#" + currentRank);
+                        rankChangeBadge.setText("Rank #" + currentRank);
+                    }
+                });
+            }
         } catch (Exception e) {
             System.err.println("[Realtime poll] " + e.getMessage());
         }

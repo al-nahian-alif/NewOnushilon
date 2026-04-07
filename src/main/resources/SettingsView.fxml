@@ -11,10 +11,8 @@
       maxWidth="Infinity" maxHeight="Infinity"
       style="-fx-background-color:#f5f7f8;">
 
-    <!-- ── SIDEBAR ── -->
     <fx:include source="Sidebar.fxml" fx:id="sidebar"/>
 
-    <!-- ── MAIN SCROLL ── -->
     <ScrollPane fx:id="mainScroll" HBox.hgrow="ALWAYS"
                 fitToWidth="true" fitToHeight="false"
                 style="-fx-background-color:#f5f7f8; -fx-background:#f5f7f8;
@@ -23,7 +21,6 @@
         <VBox style="-fx-background-color:#f5f7f8; -fx-padding:32 56 48 56;"
               spacing="0" fillWidth="true">
 
-            <!-- ══ PAGE HEADER ══ -->
             <VBox spacing="4" style="-fx-padding:0 0 28 0;">
                 <Label text="Settings"
                        style="-fx-font-size:28px; -fx-font-weight:900; -fx-text-fill:#0f172a;"/>
@@ -33,16 +30,12 @@
 
             <VBox spacing="20">
 
-                <!-- ══════════════════════════════════════
-                     8.1  PROFILE SECTION
-                ══════════════════════════════════════ -->
                 <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
                              -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
                              -fx-padding:24;
                              -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
                       spacing="16">
 
-                    <!-- Section title -->
                     <HBox spacing="8" alignment="CENTER_LEFT">
                         <Label text="👤" style="-fx-font-size:15px; -fx-text-fill:#0d7ff2;"/>
                         <Label text="Profile Section"
@@ -50,10 +43,8 @@
                                       -fx-text-fill:#0f172a;"/>
                     </HBox>
 
-                    <!-- Profile row -->
                     <HBox spacing="18" alignment="CENTER_LEFT">
 
-                        <!-- Avatar circle with initials -->
                         <StackPane fx:id="avatarCircle"
                                    style="-fx-background-color:#dbeafe; -fx-background-radius:50;
                                           -fx-min-width:76; -fx-min-height:76;
@@ -67,7 +58,6 @@
                                           -fx-text-fill:#0d7ff2;"/>
                         </StackPane>
 
-                        <!-- View mode: name + email + student ID -->
                         <VBox fx:id="profileViewMode" HBox.hgrow="ALWAYS" spacing="5">
                             <Label fx:id="profileNameLabel" text="Loading..."
                                    style="-fx-font-size:18px; -fx-font-weight:bold;
@@ -80,7 +70,6 @@
                                           -fx-font-weight:bold; -fx-padding:3 10;"/>
                         </VBox>
 
-                        <!-- Edit mode (hidden by default) -->
                         <HBox fx:id="profileEditMode" visible="false" managed="false"
                               HBox.hgrow="ALWAYS" spacing="10" alignment="CENTER_LEFT">
                             <TextField fx:id="editNameField" promptText="Your full name"
@@ -101,7 +90,6 @@
                                            -fx-padding:10 16; -fx-cursor:hand;"/>
                         </HBox>
 
-                        <!-- Edit Profile button -->
                         <Button fx:id="editProfileBtn" text="Edit Profile"
                                 onAction="#onEditProfile"
                                 style="-fx-background-color:#f1f5f9; -fx-background-radius:10;
@@ -111,323 +99,10 @@
                                        -fx-padding:10 22; -fx-cursor:hand;"/>
                     </HBox>
 
-                    <!-- Save confirmation label (fades out) -->
                     <Label fx:id="profileSavedLabel" text=""
                            style="-fx-font-size:12px; -fx-text-fill:#22c55e;"/>
                 </VBox>
 
-                <!-- ══════════════════════════════════════
-                     8.2  ACCOUNT & SUBSCRIPTION
-                ══════════════════════════════════════ -->
-                <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
-                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
-                             -fx-padding:24;
-                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
-                      spacing="16">
-
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Label text="💳" style="-fx-font-size:15px;"/>
-                        <Label text="Account &amp; Subscription"
-                               style="-fx-font-size:16px; -fx-font-weight:bold;
-                                      -fx-text-fill:#0f172a;"/>
-                    </HBox>
-
-                    <HBox alignment="CENTER_LEFT" spacing="14"
-                          style="-fx-background-color:#eff6ff; -fx-background-radius:12;
-                                 -fx-border-color:#bfdbfe; -fx-border-width:1;
-                                 -fx-border-radius:12; -fx-padding:18 20;">
-                        <!-- Verified badge -->
-                        <StackPane style="-fx-background-color:#0d7ff2; -fx-background-radius:50;
-                                          -fx-min-width:38; -fx-min-height:38;
-                                          -fx-pref-width:38; -fx-pref-height:38;" alignment="CENTER">
-                            <Label text="★" style="-fx-font-size:16px; -fx-text-fill:white;"/>
-                        </StackPane>
-
-                        <VBox HBox.hgrow="ALWAYS" spacing="2">
-                            <Label text="Pro Member"
-                                   style="-fx-font-size:14px; -fx-font-weight:bold;
-                                          -fx-text-fill:#0f172a;"/>
-                            <Label text="Your next billing cycle is on Oct 12, 2025 (Annual)"
-                                   style="-fx-font-size:12px; -fx-text-fill:#475569;"/>
-                        </VBox>
-
-                        <Button text="View Invoices" onAction="#onViewInvoices"
-                                style="-fx-background-color:#ffffff; -fx-background-radius:8;
-                                       -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                       -fx-border-radius:8; -fx-text-fill:#334155;
-                                       -fx-font-size:12px; -fx-font-weight:600;
-                                       -fx-padding:8 16; -fx-cursor:hand;"/>
-                        <Button text="Manage Subscription" onAction="#onManageSubscription"
-                                style="-fx-background-color:#0d7ff2; -fx-background-radius:8;
-                                       -fx-text-fill:white; -fx-font-size:12px;
-                                       -fx-font-weight:bold; -fx-padding:8 16; -fx-cursor:hand;"/>
-                    </HBox>
-                </VBox>
-
-                <!-- ══════════════════════════════════════
-                     8.3  STUDY PREFERENCES
-                ══════════════════════════════════════ -->
-                <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
-                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
-                             -fx-padding:24;
-                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
-                      spacing="18">
-
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Label text="📖" style="-fx-font-size:15px;"/>
-                        <Label text="Study Preferences"
-                               style="-fx-font-size:16px; -fx-font-weight:bold;
-                                      -fx-text-fill:#0f172a;"/>
-                    </HBox>
-
-                    <!-- Exam date + Daily goal -->
-                    <HBox spacing="24">
-                        <VBox spacing="8" HBox.hgrow="ALWAYS">
-                            <Label text="HSC Exam Date"
-                                   style="-fx-font-size:12px; -fx-font-weight:600;
-                                          -fx-text-fill:#334155;"/>
-                            <DatePicker fx:id="examDatePicker" maxWidth="Infinity"
-                                        onAction="#onExamDateChanged"
-                                        style="-fx-background-color:#f8fafc;
-                                               -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                               -fx-border-radius:8; -fx-background-radius:8;
-                                               -fx-font-size:13px;"/>
-                        </VBox>
-                        <VBox spacing="8" HBox.hgrow="ALWAYS">
-                            <Label text="Daily Goal (Hours/Day)"
-                                   style="-fx-font-size:12px; -fx-font-weight:600;
-                                          -fx-text-fill:#334155;"/>
-                            <ComboBox fx:id="dailyGoalCombo" maxWidth="Infinity"
-                                      onAction="#onDailyGoalChanged"
-                                      style="-fx-background-color:#f8fafc;
-                                             -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                             -fx-border-radius:8; -fx-background-radius:8;
-                                             -fx-font-size:13px;"/>
-                        </VBox>
-                    </HBox>
-
-                    <!-- Subject priority pills -->
-                    <VBox spacing="10">
-                        <Label text="Subject Priority"
-                               style="-fx-font-size:12px; -fx-font-weight:600;
-                                      -fx-text-fill:#334155;"/>
-                        <HBox fx:id="subjectPillsBox" spacing="8" alignment="CENTER_LEFT"/>
-                    </VBox>
-
-                    <!-- Auto-save confirmation -->
-                    <Label fx:id="prefsSavedLabel" text=""
-                           style="-fx-font-size:12px; -fx-text-fill:#22c55e;"/>
-                </VBox>
-
-                <!-- ══════════════════════════════════════
-                     8.4  NOTIFICATIONS
-                ══════════════════════════════════════ -->
-                <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
-                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
-                             -fx-padding:24;
-                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
-                      spacing="0">
-
-                    <HBox spacing="8" alignment="CENTER_LEFT"
-                          style="-fx-padding:0 0 18 0;">
-                        <Label text="🔔" style="-fx-font-size:15px;"/>
-                        <Label text="Notifications"
-                               style="-fx-font-size:16px; -fx-font-weight:bold;
-                                      -fx-text-fill:#0f172a;"/>
-                    </HBox>
-
-                    <!-- Row: Email -->
-                    <HBox alignment="CENTER_LEFT"
-                          style="-fx-padding:14 0;
-                                 -fx-border-color:transparent transparent #f1f5f9 transparent;
-                                 -fx-border-width:0 0 1 0;">
-                        <VBox HBox.hgrow="ALWAYS" spacing="3">
-                            <Label text="Email Notifications"
-                                   style="-fx-font-size:14px; -fx-font-weight:600;
-                                          -fx-text-fill:#0f172a;"/>
-                            <Label text="Get updates on your progress via email"
-                                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
-                        </VBox>
-                        <CheckBox fx:id="emailToggle" onAction="#onNotifChanged"
-                                  style="-fx-scale-x:1.25; -fx-scale-y:1.25;"/>
-                    </HBox>
-
-                    <!-- Row: Push -->
-                    <HBox alignment="CENTER_LEFT"
-                          style="-fx-padding:14 0;
-                                 -fx-border-color:transparent transparent #f1f5f9 transparent;
-                                 -fx-border-width:0 0 1 0;">
-                        <VBox HBox.hgrow="ALWAYS" spacing="3">
-                            <Label text="Push Notifications"
-                                   style="-fx-font-size:14px; -fx-font-weight:600;
-                                          -fx-text-fill:#0f172a;"/>
-                            <Label text="Enable desktop alerts for important events"
-                                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
-                        </VBox>
-                        <CheckBox fx:id="pushToggle" onAction="#onNotifChanged"
-                                  style="-fx-scale-x:1.25; -fx-scale-y:1.25;"/>
-                    </HBox>
-
-                    <!-- Row: Study Reminders -->
-                    <HBox alignment="CENTER_LEFT"
-                          style="-fx-padding:14 0;
-                                 -fx-border-color:transparent transparent #f1f5f9 transparent;
-                                 -fx-border-width:0 0 1 0;">
-                        <VBox HBox.hgrow="ALWAYS" spacing="3">
-                            <Label text="Study Reminders"
-                                   style="-fx-font-size:14px; -fx-font-weight:600;
-                                          -fx-text-fill:#0f172a;"/>
-                            <Label text="Daily alerts based on your study goals"
-                                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
-                        </VBox>
-                        <CheckBox fx:id="remindersToggle" onAction="#onNotifChanged"
-                                  style="-fx-scale-x:1.25; -fx-scale-y:1.25;"/>
-                    </HBox>
-
-                    <!-- Row: Weekly Reports -->
-                    <HBox alignment="CENTER_LEFT"
-                          style="-fx-padding:14 0;">
-                        <VBox HBox.hgrow="ALWAYS" spacing="3">
-                            <Label text="Weekly Reports"
-                                   style="-fx-font-size:14px; -fx-font-weight:600;
-                                          -fx-text-fill:#0f172a;"/>
-                            <Label text="Consolidated performance report every Sunday"
-                                   style="-fx-font-size:12px; -fx-text-fill:#64748b;"/>
-                        </VBox>
-                        <CheckBox fx:id="weeklyToggle" onAction="#onNotifChanged"
-                                  style="-fx-scale-x:1.25; -fx-scale-y:1.25;"/>
-                    </HBox>
-                </VBox>
-
-                <!-- ══════════════════════════════════════
-                     8.5  APPEARANCE
-                ══════════════════════════════════════ -->
-                <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
-                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
-                             -fx-padding:24;
-                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
-                      spacing="18">
-
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Label text="🎨" style="-fx-font-size:15px;"/>
-                        <Label text="Appearance"
-                               style="-fx-font-size:16px; -fx-font-weight:bold;
-                                      -fx-text-fill:#0f172a;"/>
-                    </HBox>
-
-                    <HBox spacing="40">
-
-                        <!-- Theme buttons -->
-                        <VBox spacing="10" HBox.hgrow="ALWAYS">
-                            <Label text="Theme Selection"
-                                   style="-fx-font-size:12px; -fx-font-weight:600;
-                                          -fx-text-fill:#334155;"/>
-                            <HBox spacing="10">
-                                <VBox fx:id="themeLight" alignment="CENTER" spacing="6"
-                                      onMouseClicked="#onThemeLight"
-                                      style="-fx-background-color:#ffffff; -fx-background-radius:12;
-                                             -fx-border-color:#0d7ff2; -fx-border-width:2;
-                                             -fx-border-radius:12; -fx-padding:14 0;
-                                             -fx-cursor:hand; -fx-min-width:90;">
-                                    <Label text="☀" style="-fx-font-size:22px;"/>
-                                    <Label text="Light"
-                                           style="-fx-font-size:12px; -fx-font-weight:bold;
-                                                  -fx-text-fill:#0f172a;"/>
-                                </VBox>
-                                <VBox fx:id="themeDark" alignment="CENTER" spacing="6"
-                                      onMouseClicked="#onThemeDark"
-                                      style="-fx-background-color:#f8fafc; -fx-background-radius:12;
-                                             -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                             -fx-border-radius:12; -fx-padding:14 0;
-                                             -fx-cursor:hand; -fx-min-width:90;">
-                                    <Label text="🌙" style="-fx-font-size:22px;"/>
-                                    <Label text="Dark"
-                                           style="-fx-font-size:12px; -fx-font-weight:bold;
-                                                  -fx-text-fill:#64748b;"/>
-                                </VBox>
-                                <VBox fx:id="themeSystem" alignment="CENTER" spacing="6"
-                                      onMouseClicked="#onThemeSystem"
-                                      style="-fx-background-color:#f8fafc; -fx-background-radius:12;
-                                             -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                             -fx-border-radius:12; -fx-padding:14 0;
-                                             -fx-cursor:hand; -fx-min-width:90;">
-                                    <Label text="💻" style="-fx-font-size:22px;"/>
-                                    <Label text="System"
-                                           style="-fx-font-size:12px; -fx-font-weight:bold;
-                                                  -fx-text-fill:#64748b;"/>
-                                </VBox>
-                            </HBox>
-                        </VBox>
-
-                        <!-- Font size slider -->
-                        <VBox spacing="10" HBox.hgrow="ALWAYS">
-                            <Label text="Font Size"
-                                   style="-fx-font-size:12px; -fx-font-weight:600;
-                                          -fx-text-fill:#334155;"/>
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="A"
-                                       style="-fx-font-size:11px; -fx-text-fill:#94a3b8;"/>
-                                <Slider fx:id="fontSizeSlider" HBox.hgrow="ALWAYS"
-                                        min="12" max="18" value="14"
-                                        showTickMarks="false"
-                                        onMouseReleased="#onFontSizeChanged"
-                                        style="-fx-accent:#0d7ff2;"/>
-                                <Label text="A"
-                                       style="-fx-font-size:18px; -fx-text-fill:#64748b;"/>
-                            </HBox>
-                            <Label fx:id="fontSizeLabel" text="14px (Default)"
-                                   style="-fx-font-size:11px; -fx-text-fill:#94a3b8;"/>
-                        </VBox>
-                    </HBox>
-                </VBox>
-
-                <!-- ══════════════════════════════════════
-                     8.6  SECURITY & PRIVACY
-                ══════════════════════════════════════ -->
-                <VBox style="-fx-background-color:#ffffff; -fx-background-radius:16;
-                             -fx-border-color:#e2e8f0; -fx-border-width:1; -fx-border-radius:16;
-                             -fx-padding:24;
-                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.04),8,0,0,2);"
-                      spacing="18">
-
-                    <HBox spacing="8" alignment="CENTER_LEFT">
-                        <Label text="🔒" style="-fx-font-size:15px;"/>
-                        <Label text="Security &amp; Privacy"
-                               style="-fx-font-size:16px; -fx-font-weight:bold;
-                                      -fx-text-fill:#0f172a;"/>
-                    </HBox>
-
-                    <HBox spacing="14">
-                        <Button text="🔑  Change Password"
-                                onAction="#onChangePassword"
-                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                style="-fx-background-color:#f8fafc; -fx-background-radius:12;
-                                       -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                       -fx-border-radius:12; -fx-text-fill:#334155;
-                                       -fx-font-size:13px; -fx-font-weight:600;
-                                       -fx-padding:16 0; -fx-cursor:hand;"/>
-                        <Button text="📱  Two-Factor Auth"
-                                onAction="#onTwoFactor"
-                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                style="-fx-background-color:#f8fafc; -fx-background-radius:12;
-                                       -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                       -fx-border-radius:12; -fx-text-fill:#334155;
-                                       -fx-font-size:13px; -fx-font-weight:600;
-                                       -fx-padding:16 0; -fx-cursor:hand;"/>
-                        <Button text="📄  Privacy Policy"
-                                onAction="#onPrivacyPolicy"
-                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                style="-fx-background-color:#f8fafc; -fx-background-radius:12;
-                                       -fx-border-color:#e2e8f0; -fx-border-width:1;
-                                       -fx-border-radius:12; -fx-text-fill:#334155;
-                                       -fx-font-size:13px; -fx-font-weight:600;
-                                       -fx-padding:16 0; -fx-cursor:hand;"/>
-                    </HBox>
-                </VBox>
-
-                <!-- ══════════════════════════════════════
-                     8.7  DANGER ZONE
-                ══════════════════════════════════════ -->
                 <VBox style="-fx-background-color:#fff5f5; -fx-background-radius:16;
                              -fx-border-color:#fecaca; -fx-border-width:1; -fx-border-radius:16;
                              -fx-padding:24;"
@@ -457,7 +132,6 @@
                     </HBox>
                 </VBox>
 
-                <!-- Footer -->
                 <Label text="HSC PREP APP v2.4.0  •  BUILT FOR SUCCESS"
                        style="-fx-font-size:10px; -fx-text-fill:#cbd5e1; -fx-font-weight:bold;"
                        maxWidth="Infinity" textAlignment="CENTER"/>
